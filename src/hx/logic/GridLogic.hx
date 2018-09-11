@@ -1,4 +1,5 @@
 package logic;
+import js.Browser;
 import js.html.IterationCompositeOperation;
 
 enum Direction
@@ -33,6 +34,25 @@ class GridLogic
 	
 	public function new() 
 	{
+		var regWidth:EReg = new EReg("width=([0-9]*)", "");
+		var regHeight:EReg = new EReg("height=([0-9]*)", "");
+		var regValue:EReg = new EReg("maxvalue=([0-9]*)", "");
+		
+		if (regWidth.match( Browser.location.hash))
+		{
+			GRID_WIDTH = Std.parseInt(regWidth.matched(1));
+		}
+		if (regHeight.match( Browser.location.hash))
+		{
+			GRID_HEIGHT = Std.parseInt(regHeight.matched(1));
+		}
+		if (regValue.match( Browser.location.hash))
+		{
+			MAX_VALUE = Std.parseInt(regValue.matched(1));
+		}
+		
+		trace(GRID_WIDTH , GRID_HEIGHT, MAX_VALUE);
+		
 		grid = [];
 		nodes = [];
 		for (i in 0...GRID_WIDTH)
@@ -76,6 +96,9 @@ class GridLogic
 	{
 		if (node.value != -1) throw "Randomizing node with existing value.";
 		node.value = Math.floor(Math.random() * MAX_VALUE);
+		//Spawn causes removal. Ignore.
+		if (remove().length > 0)
+			node.value = -1;
 	}
 	
 	/**

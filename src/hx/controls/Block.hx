@@ -3,6 +3,7 @@ package controls;
 import createjs.tweenjs.Ease;
 import createjs.tweenjs.Tween;
 import js.html.SimpleGestureEvent;
+import logic.GridLogic;
 import logic.GridLogic.Node;
 import pixi.core.display.Container;
 import pixi.core.sprites.Sprite;
@@ -43,8 +44,9 @@ class Block extends Container
 		this.sprite.x = -6;
 		this.sprite.y = -6;
 		this.scale.x = this.scale.y = 0;
+		
 		//TEMP SCALE
-		sprite.width = sprite.height = 120;
+		sprite.width = sprite.height = GridControl.BLOCK_HEIGHT-10*6/GridLogic.GRID_HEIGHT;
 		this.addChild(this.sprite);
 	}
 	
