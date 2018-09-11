@@ -102,17 +102,17 @@ class GridLogic
 		for ( y in 0...GRID_HEIGHT)
 		{
 			//Bubble sort the line
-			for ( j in 0...GRID_WIDTH)
+			for ( j in 1...GRID_WIDTH)
 			{
-				var x:Int = GRID_WIDTH - j - 1;
+				var x:Int = j;
 				var n:Node = grid[x][y];
-				var xn:Int = x;
-				while (n.value == -1)
+				if (n.value == -1)
 				{
-					//Bubble
-					xn--;
-					if (xn < 0) break;
-					else swap(n, grid[xn][y]);
+					for (i in 0...j)
+					{
+						var xn:Int = j - i - 1;
+						swap(n, grid[xn][y]);
+					}
 				}
 			}
 		}
@@ -123,36 +123,16 @@ class GridLogic
 		for ( y in 0...GRID_HEIGHT)
 		{
 			//Bubble sort the line
-			for ( x in 0...GRID_WIDTH)
+			for ( j in 1...GRID_WIDTH)
 			{
+				var x:Int = GRID_WIDTH - j -1;
 				var n:Node = grid[x][y];
-				var xn:Int = x;
-				while (n.value == -1)
+				if (n.value == -1)
 				{
-					//Bubble
-					xn++;
-					if (xn >= GRID_WIDTH) break;
-					else swap(n, grid[xn][y]);
-				}
-			}
-		}
-	}
-	
-	private function bubbleUp():Void
-	{
-		for ( x in 0...GRID_WIDTH)
-		{
-			//Bubble sort the line
-			for ( y in 0...GRID_HEIGHT)
-			{
-				var n:Node = grid[x][y];
-				var yn:Int = y;
-				while (n.value == -1)
-				{
-					//Bubble
-					yn++;
-					if (yn >= GRID_HEIGHT) break;
-					else swap(n, grid[x][yn]);
+					for (i in x+1...GRID_WIDTH)
+					{
+						swap(n, grid[i][y]);
+					}
 				}
 			}
 		}
@@ -163,17 +143,37 @@ class GridLogic
 		for ( x in 0...GRID_WIDTH)
 		{
 			//Bubble sort the line
-			for ( j in 0...GRID_HEIGHT)
+			for ( j in 1...GRID_HEIGHT)
 			{
-				var y:Int = GRID_HEIGHT - j - 1;
+				var y:Int = j;
 				var n:Node = grid[x][y];
-				var yn:Int = y;
-				while (n.value == -1)
+				if (n.value == -1)
 				{
-					//Bubble
-					yn--;
-					if (yn < 0) break;
-					else swap(n, grid[x][yn]);
+					for (i in 0...j)
+					{
+						var yn:Int = j - i - 1;
+						swap(n, grid[x][yn]);
+					}
+				}
+			}
+		}
+	}
+	
+	private function bubbleUp():Void
+	{
+		for ( x in 0...GRID_WIDTH)
+		{
+			//Bubble sort the line
+			for ( j in 1...GRID_HEIGHT)
+			{
+				var y:Int = GRID_HEIGHT - j -1;
+				var n:Node = grid[x][y];
+				if (n.value == -1)
+				{
+					for (i in y+1...GRID_HEIGHT)
+					{
+						swap(n, grid[x][i]);
+					}
 				}
 			}
 		}
@@ -181,11 +181,20 @@ class GridLogic
 	
 	private function swap(n1:Node, n2:Node):Void
 	{
-		var t:Int = n1.value;
-		n1.value = n2.value;
-		n2.value = t;
+		var n1x:Int = n1.x;
+		var n1y:Int = n1.y;
+		var n2x:Int = n2.x;
+		var n2y:Int = n2.y;
+		
+		grid[n1x][n1y] = n2;
+		grid[n2x][n2y] = n1;
+		
+		n1.x = n2x;
+		n1.y = n2y;
+		
+		n2.x = n1x;
+		n2.y = n1y;
 	}
-	
 	
 	/**
 	 * Removes found groups.

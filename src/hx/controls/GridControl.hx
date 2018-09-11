@@ -1,5 +1,6 @@
 package controls;
 
+import haxe.Timer;
 import js.Browser;
 import js.html.EventTarget;
 import js.html.KeyboardEvent;
@@ -33,6 +34,11 @@ class GridControl extends Container
 	private var swipeStart:Point = new Point(0.0, 0.0);
 	private var swipeStop:Point = new Point(0.0, 0.0);
 	private var swipeDirection:Point = new Point(0.0, 0.0);
+
+	private var enabled:Bool = false;
+	
+	private var lastRemoved:Array<Node>;
+	private var lastSwipeDirection:Direction;
 	
 	public function new() 
 	{
@@ -90,6 +96,7 @@ class GridControl extends Container
 				b.x = x * BLOCK_WIDTH + Math.max(0, (x - 1)) * SPACING + BLOCK_WIDTH / 2;
 				b.y = y * BLOCK_HEIGHT + Math.max(0, (y - 1)) * SPACING + BLOCK_HEIGHT / 2;
 				this.grid[x][y] = b;
+				b.node = logic.grid[x][y];
 				this.blocks.push(b);
 				this.blockContainer.addChild(b);
 			}
@@ -98,14 +105,14 @@ class GridControl extends Container
 		this.addChild(this.blockContainer);
 		
 		this.syncNodes();
+		enabled = true;
 	}
 	
 	private function syncNodes():Void
 	{
-		for ( n in logic.nodes)
+		for ( b in blocks)
 		{
-			var b:Block = grid[n.x][n.y];
-			b.setType(n.value);
+			b.sync();
 		}
 	}
 	
@@ -128,11 +135,20 @@ class GridControl extends Container
 		{
 			direction = Direction.right;
 		}
-		
-		if (direction != null)
+		doSwipe(direction);
+	}
+	
+	private function doSwipe(direction:Direction):Void
+	{
+		if (direction != null && enabled)
 		{
+			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
-			var removed:Array<Node> = this.logic.remove();
+			this.syncNodes();
+			lastRemoved = this.logic.remove();
+			Timer.delay(nextStep, 350);
+		}
+		/*
 			while (removed.length > 0)
 			{
 				this.logic.clearRemoved(removed);
@@ -147,11 +163,29 @@ class GridControl extends Container
 			this.syncNodes();
 			moves++;
 			trace(moves);
-		}
+		}*/
 		
 		// Reset swipe direction logic
 		swipeStart.set(0, 0);
 		swipeStop.set(0, 0);
 		swipeDirection.set(0, 0);
+	}
+	
+	private function nextStep():Void
+	{
+		if ( lastRemoved.length > 0)
+		{
+			this.logic.clearRemoved(lastRemoved);
+			this.logic.swipe(lastSwipeDirection);
+			this.syncNodes();
+			lastRemoved = this.logic.remove();
+			Timer.delay(nextStep, 350);
+		}
+		else
+		{
+			this.logic.spawnRandom();
+			this.syncNodes();
+			this.enabled = true;
+		}
 	}
 }
