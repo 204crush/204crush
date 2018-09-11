@@ -42,8 +42,6 @@ class GridControl extends Container
 	private var lastRemoved:Array<Node>;
 	private var lastSwipeDirection:Direction;
 	
-	
-	
 	public function new() 
 	{
 		super();
@@ -113,7 +111,7 @@ class GridControl extends Container
 		var diffX:Float = Math.abs(swipeStart.x - swipeStop.x);
 		var diffY:Float = Math.abs(swipeStart.y - swipeStop.y);
 		
-		if (diffX < 200 && diffY < 200)
+		if (diffX < 50 && diffY < 50)
 		{
 			return;
 		}
@@ -126,7 +124,7 @@ class GridControl extends Container
 		} else if ( diffX < diffY)
 		{
 			// Set move in Y-Axis
-			swipeStart.x > swipeStop.x ? doSwipe(Direction.up) : doSwipe(Direction.down);
+			swipeStart.y > swipeStop.y ? doSwipe(Direction.up) : doSwipe(Direction.down);
 		}
 		swipeStart.set(0, 0);
 		swipeStop.set(0, 0);
