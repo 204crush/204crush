@@ -233,6 +233,7 @@ controls_GameView.prototype = $extend(PIXI.Container.prototype,{
 	,__class__: controls_GameView
 });
 var controls_GridControl = function() {
+	this.moves = 0;
 	PIXI.Container.call(this);
 	this.logic = new logic_GridLogic();
 	this.logic.spawnRandom();
@@ -299,6 +300,8 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 			this.logic.spawnRandom();
 			this.logic.printGrid();
 			this.syncNodes();
+			this.moves++;
+			console.log(this.moves);
 		}
 	}
 	,__class__: controls_GridControl

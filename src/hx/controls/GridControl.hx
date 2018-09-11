@@ -26,6 +26,7 @@ class GridControl extends Container
 	
 	private var blockContainer:Container;
 	
+	private var moves:Int = 0;
 	
 	public function new() 
 	{
@@ -107,6 +108,8 @@ class GridControl extends Container
 			
 			this.logic.printGrid();
 			this.syncNodes();
+			moves++;
+			trace(moves);
 		}
 		
 	}
