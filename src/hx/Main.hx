@@ -54,8 +54,8 @@ class Main
 	private var ticker:Ticker;
 	
 	public var game:GameView;
-	
 	private var start:StartView;
+	
 	/**
 	 * Renderer for the game.
 	 */

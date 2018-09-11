@@ -57,6 +57,14 @@ HxOverrides.substr = function(s,pos,len) {
 	}
 	return s.substr(pos,len);
 };
+HxOverrides.remove = function(a,obj) {
+	var i = a.indexOf(obj);
+	if(i == -1) {
+		return false;
+	}
+	a.splice(i,1);
+	return true;
+};
 var Main = $hx_exports["Game"] = function() {
 	this.tickListeners = [];
 	console.log("new game");
@@ -177,11 +185,13 @@ Std.string = function(s) {
 var controls_GameView = $hx_exports["GV"] = function() {
 	PIXI.Container.call(this);
 	this.initializeControls();
+	this.control = new controls_GridControl();
 };
 controls_GameView.__name__ = true;
 controls_GameView.__super__ = PIXI.Container;
 controls_GameView.prototype = $extend(PIXI.Container.prototype,{
 	start: function() {
+		this.control = new controls_GridControl();
 	}
 	,initializeControls: function() {
 	}
@@ -189,6 +199,44 @@ controls_GameView.prototype = $extend(PIXI.Container.prototype,{
 		this.size = size;
 	}
 	,__class__: controls_GameView
+});
+var controls_GridControl = function() {
+	PIXI.Container.call(this);
+	this.logic = new logic_GridLogic();
+	this.logic.spawnRandom();
+	this.logic.printGrid();
+	this.initializeControls();
+	window.addEventListener("keydown",$bind(this,this.keyDown));
+};
+controls_GridControl.__name__ = true;
+controls_GridControl.__super__ = PIXI.Container;
+controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
+	initializeControls: function() {
+	}
+	,keyDown: function(event) {
+		var direction = null;
+		if(event.keyCode == 38) {
+			direction = logic_Direction.up;
+		} else if(event.keyCode == 37) {
+			direction = logic_Direction.left;
+		} else if(event.keyCode == 40) {
+			direction = logic_Direction.down;
+		} else if(event.keyCode == 39) {
+			direction = logic_Direction.right;
+		}
+		if(direction != null) {
+			this.logic.swipe(direction);
+			var removed = this.logic.remove();
+			while(removed.length > 0) {
+				this.logic.clearRemoved(removed);
+				this.logic.swipe(direction);
+				removed = this.logic.remove();
+			}
+			this.logic.spawnRandom();
+			this.logic.printGrid();
+		}
+	}
+	,__class__: controls_GridControl
 });
 var controls_StartView = function() {
 	PIXI.Container.call(this);
@@ -724,6 +772,288 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
 	a.byteOffset = start;
 	return a;
+};
+var logic_Direction = { __ename__ : true, __constructs__ : ["left","right","up","down"] };
+logic_Direction.left = ["left",0];
+logic_Direction.left.toString = $estr;
+logic_Direction.left.__enum__ = logic_Direction;
+logic_Direction.right = ["right",1];
+logic_Direction.right.toString = $estr;
+logic_Direction.right.__enum__ = logic_Direction;
+logic_Direction.up = ["up",2];
+logic_Direction.up.toString = $estr;
+logic_Direction.up.__enum__ = logic_Direction;
+logic_Direction.down = ["down",3];
+logic_Direction.down.toString = $estr;
+logic_Direction.down.__enum__ = logic_Direction;
+var logic_Orientation = { __ename__ : true, __constructs__ : ["horizontal","vertical"] };
+logic_Orientation.horizontal = ["horizontal",0];
+logic_Orientation.horizontal.toString = $estr;
+logic_Orientation.horizontal.__enum__ = logic_Orientation;
+logic_Orientation.vertical = ["vertical",1];
+logic_Orientation.vertical.toString = $estr;
+logic_Orientation.vertical.__enum__ = logic_Orientation;
+var logic_GridLogic = function() {
+	this.grid = [];
+	this.nodes = [];
+	var _g1 = 0;
+	var _g = logic_GridLogic.GRID_WIDTH;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.grid[i] = [];
+		var _g3 = 0;
+		var _g2 = logic_GridLogic.GRID_HEIGHT;
+		while(_g3 < _g2) {
+			var j = _g3++;
+			var n = { value : -1, x : i, y : j};
+			this.grid[i][j] = n;
+			this.nodes.push(n);
+		}
+	}
+};
+logic_GridLogic.__name__ = true;
+logic_GridLogic.prototype = {
+	spawnRandom: function() {
+		var possible = this.nodes.filter(function(n) {
+			return n.value == -1;
+		});
+		var amount = Math.floor(Math.min(possible.length,Math.random() * (logic_GridLogic.RANDOM_SPAWN_AMOUNT.max - logic_GridLogic.RANDOM_SPAWN_AMOUNT.min) + logic_GridLogic.RANDOM_SPAWN_AMOUNT.min));
+		var _g1 = 0;
+		var _g = amount;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var rnd = Math.floor(Math.random() * possible.length);
+			var n1 = possible[rnd];
+			HxOverrides.remove(possible,n1);
+			this.randomizeValue(n1);
+		}
+	}
+	,randomizeValue: function(node) {
+		if(node.value != -1) {
+			throw new js__$Boot_HaxeError("Randomizing node with existing value.");
+		}
+		node.value = Math.floor(Math.random() * logic_GridLogic.MAX_VALUE);
+	}
+	,swipe: function(direction) {
+		if(direction == logic_Direction.right) {
+			this.bubbleRight();
+		} else if(direction == logic_Direction.left) {
+			this.bubbleLeft();
+		} else if(direction == logic_Direction.down) {
+			this.bubbleDown();
+		} else if(direction == logic_Direction.up) {
+			this.bubbleUp();
+		}
+	}
+	,bubbleRight: function() {
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_HEIGHT;
+		while(_g1 < _g) {
+			var y = _g1++;
+			var _g3 = 0;
+			var _g2 = logic_GridLogic.GRID_WIDTH;
+			while(_g3 < _g2) {
+				var j = _g3++;
+				var x = logic_GridLogic.GRID_WIDTH - j - 1;
+				var n = this.grid[x][y];
+				var xn = x;
+				while(n.value == -1) {
+					--xn;
+					if(xn < 0) {
+						break;
+					} else {
+						this.swap(n,this.grid[xn][y]);
+					}
+				}
+			}
+		}
+	}
+	,bubbleLeft: function() {
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_HEIGHT;
+		while(_g1 < _g) {
+			var y = _g1++;
+			var _g3 = 0;
+			var _g2 = logic_GridLogic.GRID_WIDTH;
+			while(_g3 < _g2) {
+				var x = _g3++;
+				var n = this.grid[x][y];
+				var xn = x;
+				while(n.value == -1) {
+					++xn;
+					if(xn >= logic_GridLogic.GRID_WIDTH) {
+						break;
+					} else {
+						this.swap(n,this.grid[xn][y]);
+					}
+				}
+			}
+		}
+	}
+	,bubbleUp: function() {
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_WIDTH;
+		while(_g1 < _g) {
+			var x = _g1++;
+			var _g3 = 0;
+			var _g2 = logic_GridLogic.GRID_HEIGHT;
+			while(_g3 < _g2) {
+				var y = _g3++;
+				var n = this.grid[x][y];
+				var yn = y;
+				while(n.value == -1) {
+					++yn;
+					if(yn >= logic_GridLogic.GRID_HEIGHT) {
+						break;
+					} else {
+						this.swap(n,this.grid[x][yn]);
+					}
+				}
+			}
+		}
+	}
+	,bubbleDown: function() {
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_WIDTH;
+		while(_g1 < _g) {
+			var x = _g1++;
+			var _g3 = 0;
+			var _g2 = logic_GridLogic.GRID_HEIGHT;
+			while(_g3 < _g2) {
+				var j = _g3++;
+				var y = logic_GridLogic.GRID_HEIGHT - j - 1;
+				var n = this.grid[x][y];
+				var yn = y;
+				while(n.value == -1) {
+					--yn;
+					if(yn < 0) {
+						break;
+					} else {
+						this.swap(n,this.grid[x][yn]);
+					}
+				}
+			}
+		}
+	}
+	,swap: function(n1,n2) {
+		var t = n1.value;
+		n1.value = n2.value;
+		n2.value = t;
+	}
+	,remove: function() {
+		var found = [];
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_WIDTH;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.sweepTestVertical(found,i);
+		}
+		var _g11 = 0;
+		var _g2 = logic_GridLogic.GRID_HEIGHT;
+		while(_g11 < _g2) {
+			var i1 = _g11++;
+			this.sweepTestHorizontal(found,i1);
+		}
+		var removed = [];
+		var _g3 = 0;
+		while(_g3 < found.length) {
+			var line = found[_g3];
+			++_g3;
+			var _g12 = 0;
+			var _g21 = line.nodes;
+			while(_g12 < _g21.length) {
+				var n = _g21[_g12];
+				++_g12;
+				if(removed.indexOf(n) == -1) {
+					removed.push(n);
+				}
+			}
+		}
+		if(removed.length > 0) {
+			console.log("REMVOED: " + removed.length);
+		}
+		return removed;
+	}
+	,clearRemoved: function(removed) {
+		var _g = 0;
+		while(_g < removed.length) {
+			var n = removed[_g];
+			++_g;
+			n.value = -1;
+		}
+	}
+	,sweepTestHorizontal: function(found,y) {
+		var current = [this.grid[0][y]];
+		var _g1 = 1;
+		var _g = logic_GridLogic.GRID_WIDTH;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var cmp = this.grid[i][y];
+			if(cmp.value == current[0].value && cmp.value >= 0) {
+				current.push(cmp);
+			} else {
+				if(current.length >= 3) {
+					found.push({ orientation : logic_Orientation.horizontal, nodes : current});
+				}
+				current = [cmp];
+			}
+		}
+		if(current.length >= 3) {
+			found.push({ orientation : logic_Orientation.horizontal, nodes : current});
+		}
+	}
+	,sweepTestVertical: function(found,x) {
+		var current = [this.grid[x][0]];
+		var _g1 = 1;
+		var _g = logic_GridLogic.GRID_HEIGHT;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var cmp = this.grid[x][i];
+			if(cmp.value == current[0].value && cmp.value >= 0) {
+				current.push(cmp);
+			} else {
+				if(current.length >= 3) {
+					found.push({ orientation : logic_Orientation.vertical, nodes : current});
+				}
+				current = [cmp];
+			}
+		}
+		if(current.length >= 3) {
+			found.push({ orientation : logic_Orientation.vertical, nodes : current});
+		}
+	}
+	,isFinished: function() {
+		var allFilled = true;
+		var _g = 0;
+		var _g1 = this.nodes;
+		while(_g < _g1.length) {
+			var n = _g1[_g];
+			++_g;
+			if(n.value == -1) {
+				allFilled = false;
+				break;
+			}
+		}
+		return allFilled;
+	}
+	,printGrid: function() {
+		var s = "finished: " + Std.string(this.isFinished()) + "\n";
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_HEIGHT;
+		while(_g1 < _g) {
+			var y = _g1++;
+			var _g3 = 0;
+			var _g2 = logic_GridLogic.GRID_WIDTH;
+			while(_g3 < _g2) {
+				var x = _g3++;
+				var n = this.grid[x][y];
+				s += n.value >= 0 ? n.value == null ? "null" : "" + n.value : " ";
+			}
+			s += "\n";
+		}
+		console.log(s);
+	}
+	,__class__: logic_GridLogic
 };
 var particles_BaseParticleEffect = function() {
 	this.complete = true;
@@ -1406,6 +1736,10 @@ haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
 js_Boot.__toStr = ({ }).toString;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
+logic_GridLogic.GRID_WIDTH = 5;
+logic_GridLogic.GRID_HEIGHT = 5;
+logic_GridLogic.MAX_VALUE = 4;
+logic_GridLogic.RANDOM_SPAWN_AMOUNT = { min : 1, max : 3};
 sounds_Sounds.BLOB_SUCK = "blob_suck";
 sounds_Sounds.BLOB_WRONG = "blob_wrong";
 sounds_Sounds.BLOBS_COMBINE = "blobs_combine";

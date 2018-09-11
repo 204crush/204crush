@@ -19,6 +19,7 @@ import util.Pool;
 @:expose("GV")
 class GameView extends Container
 {
+	private var control:GridControl;
 	private var size:Rectangle;
 	
 	public function new() 
@@ -26,16 +27,19 @@ class GameView extends Container
 		super();
 		
 		this.initializeControls();
+		
+		//Testing purposes
+		this.control = new GridControl();
 	}
 	
 	public function start():Void
 	{
+		this.control = new GridControl();
 		
 	}
 	
 	private function initializeControls():Void
 	{
-		
 	}
 	
 	public function resize(size:Rectangle):Void
