@@ -6,6 +6,7 @@ import js.html.SimpleGestureEvent;
 import logic.GridLogic.Node;
 import pixi.core.display.Container;
 import pixi.core.sprites.Sprite;
+import pixi.core.textures.Texture;
 import util.Asset;
 
 /**
@@ -19,6 +20,8 @@ class Block extends Container
 
 	private var active:Bool = false;
 	
+	private var textures:Array<Texture>;
+	
 	public function new() 
 	{
 		super();
@@ -27,8 +30,18 @@ class Block extends Container
 	
 	private function initializeControls():Void
 	{
+		textures = [
+			Asset.getTexture("block_blue/blockie_blue.png", true),
+			Asset.getTexture("block_green/blockie_green.png", true),
+			Asset.getTexture("block_orange/blockie_orange.png", true),
+			Asset.getTexture("block_purple/blockie_purple.png", true),
+			//Asset.getTexture("block_blue/blockie_blue.png", true),
+		];
+		
 		this.sprite = Asset.getImage("temp.png", true);
 		this.sprite.anchor.x = this.sprite.anchor.y = 0.5;
+		this.sprite.x = -6;
+		this.sprite.y = -6;
 		this.scale.x = this.scale.y = 0;
 		//TEMP SCALE
 		sprite.width = sprite.height = 120;
@@ -47,7 +60,7 @@ class Block extends Container
 		}
 		else if (!active && node.value >= 0)
 		{
-			this.sprite.tint = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0x0, 0xffffff][value];
+			this.sprite.texture = textures[value];
 			//New spawn
 			this.active = true;
 			this.x = node.x * GridControl.BLOCK_WIDTH + Math.max(0, node.x-1)*GridControl.SPACING + GridControl.BLOCK_WIDTH/2;
@@ -57,7 +70,7 @@ class Block extends Container
 		}
 		else if(active)
 		{
-			this.sprite.tint = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0x0, 0xffffff][value];
+			this.sprite.texture = textures[value];
 			//Move
 			Tween.removeTweens(this);
 			Tween.get(this).to({
