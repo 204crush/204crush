@@ -42,7 +42,7 @@ class GridControl extends Container
 	private var lastRemoved:Array<Node>;
 	private var lastSwipeDirection:Direction;
 	
-	private var displacementSprite:Sprite;
+	
 	
 	public function new() 
 	{
@@ -58,9 +58,6 @@ class GridControl extends Container
 		Browser.window.addEventListener("touchend", touchUp);
 		
 		
-		displacementSprite = Asset.getImage('displace.png', false);
-		this.addChild(displacementSprite);
-		displacementSprite.anchor.set(0.5);
 	}
 	
 	private function initializeControls():Void
@@ -107,7 +104,7 @@ class GridControl extends Container
 	{
 		// Set stop point for touch
 		swipeStop.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
-		displacementSprite.position.copy(this.toLocal(swipeStop));
+		
 	}
 	
 	private function touchUp(eventData:TouchEvent) 
