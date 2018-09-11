@@ -49,37 +49,9 @@ class GridControl extends Container
 		this.initializeControls();
 		
 		Browser.window.addEventListener("keydown", keyDown);
-		Browser.window.addEventListener("touchstart", function(eventData:TouchEvent) 
-		{
-			// Set start point for touch
-			swipeStart.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
-		});
-		
-		Browser.window.addEventListener("touchmove", function(eventData:TouchEvent) 
-		{
-			// Set stop point for touch
-			swipeStop.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
-		});
-		
-		Browser.window.addEventListener("touchend", function() 
-		{
-			// Calculate length of the different axis
-			var diffX:Float = Math.abs(swipeStart.x - swipeStop.x);
-			var diffY:Float = Math.abs(swipeStart.y - swipeStop.y);
-			
-			if (diffX > diffY ) 
-			{
-				// Set move in X-Axis
-				swipeDirection.set(swipeStart.x > swipeStop.x ? -1 : 1, 0);
-			} else
-			{
-				// Set move in Y-Axis
-				swipeDirection.set(0, swipeStart.y > swipeStop.y ? -1 : 1);
-			}
-			
-			//Fire KeyDown logic
-			//keyDown;
-		});
+		Browser.window.addEventListener("touchstart", touchDown);
+		Browser.window.addEventListener("touchmove", touchUpdate);
+		Browser.window.addEventListener("touchend", touchUp);
 	}
 	
 	private function initializeControls():Void
@@ -116,22 +88,55 @@ class GridControl extends Container
 		}
 	}
 	
+	private function touchDown(eventData:TouchEvent) 
+	{
+		// Set start point for touch
+		swipeStart.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
+	}
+	
+	private function touchUpdate(eventData:TouchEvent) 
+	{
+		// Set stop point for touch
+		swipeStop.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
+	}
+		
+	private function touchUp(eventData:TouchEvent) 
+	{
+		// Calculate length of the different axis
+		var diffX:Float = Math.abs(swipeStart.x - swipeStop.x);
+		var diffY:Float = Math.abs(swipeStart.y - swipeStop.y);
+		
+		if (diffX > diffY ) 
+		{
+			// Set move in X-Axis
+			swipeStart.x > swipeStop.x ? doSwipe(Direction.left) : doSwipe(Direction.right);
+			
+		} else if ( diffX < diffY)
+		{
+			// Set move in Y-Axis
+			swipeStart.x > swipeStop.x ? doSwipe(Direction.up) : doSwipe(Direction.down);
+		}
+		swipeStart.set(0, 0);
+		swipeStop.set(0, 0);
+		swipeDirection.set(0, 0);
+	}
+
 	private function keyDown(event:KeyboardEvent):Void
 	{
 		var direction:Direction = null;
-		if (event.keyCode == 38 || swipeDirection.y < 0) //up
+		if (event.keyCode == 38) //up
 		{
 			direction = Direction.up;
 		}
-		else if (event.keyCode == 37 || swipeDirection.x < 0)//left
+		else if (event.keyCode == 37)//left
 		{
 			direction = Direction.left;
 		}
-		else if (event.keyCode == 40 || swipeDirection.y > 0)//down
+		else if (event.keyCode == 40)//down
 		{
 			direction = Direction.down;
 		}
-		else if (event.keyCode == 39 || swipeDirection.x > 0)//right
+		else if (event.keyCode == 39)//right
 		{
 			direction = Direction.right;
 		}
@@ -166,9 +171,6 @@ class GridControl extends Container
 		}*/
 		
 		// Reset swipe direction logic
-		swipeStart.set(0, 0);
-		swipeStop.set(0, 0);
-		swipeDirection.set(0, 0);
 	}
 	
 	private function nextStep():Void
