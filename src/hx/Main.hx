@@ -117,17 +117,8 @@ class Main
 		{
 			var size:Rectangle = this.getGameSize();
 			
-			var s:Float = Math.min( size.width / 550, size.height / 550);
-			this.viewport.scale.x = this.viewport.scale.y = s;
-			
 			this.game.resize(size);
-			this.renderer.resize(size.width, size.height);
 			
-			this.viewport.x = size.width / 2;
-			this.viewport.y = size.height / 2;
-			
-			this.start.resize(size);
-			this.mainContainer.visible = true;
 		},
 		50);
 	}
@@ -173,13 +164,14 @@ class Main
 		this.mainContainer = new Container();
 		
 		this.game = new GameView();
+		this.game.visible = false;
 		this.start = new StartView();
+		
+		this.mainContainer.addChild(this.start);
+		this.mainContainer.addChild(this.game);
 		
 		//ParticleManager.init();
 		
-		this.mainContainer.addChild(this.viewport);
-		
-		this.mainContainer.visible = false;
 		this.onResize(null);
 		this.ticker = new Ticker();
 		this.ticker.start();

@@ -15,7 +15,7 @@ class StartView extends Container
 {
 	private var logo:Sprite;
 	public var start:Sprite;
-
+	
 	private var origsize:Rectangle;
 	
 	public function new() 

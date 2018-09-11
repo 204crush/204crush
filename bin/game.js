@@ -85,14 +85,7 @@ Main.prototype = {
 		}
 		this.resizeTimer = haxe_Timer.delay(function() {
 			var size = _gthis.getGameSize();
-			var s = Math.min(size.width / 550,size.height / 550);
-			_gthis.viewport.scale.x = _gthis.viewport.scale.y = s;
 			_gthis.game.resize(size);
-			_gthis.renderer.resize(size.width,size.height);
-			_gthis.viewport.x = size.width / 2;
-			_gthis.viewport.y = size.height / 2;
-			_gthis.start.resize(size);
-			_gthis.mainContainer.visible = true;
 		},50);
 	}
 	,getGameSize: function() {
@@ -116,9 +109,10 @@ Main.prototype = {
 		this.world.gravity.y = 0.4;
 		this.mainContainer = new PIXI.Container();
 		this.game = new controls_GameView();
+		this.game.visible = false;
 		this.start = new controls_StartView();
-		this.mainContainer.addChild(this.viewport);
-		this.mainContainer.visible = false;
+		this.mainContainer.addChild(this.start);
+		this.mainContainer.addChild(this.game);
 		this.onResize(null);
 		this.ticker = new PIXI.ticker.Ticker();
 		this.ticker.start();
