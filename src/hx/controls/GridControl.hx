@@ -23,6 +23,7 @@ class GridControl extends Container
 	public static var SPACING:Int = 0;
 	public static var BLOCK_HEIGHT:Int = 130;
 	public static var BLOCK_WIDTH:Int = 130;
+	public static var DEAD_ZONE:Int = 50;
 	
 	private var logic:GridLogic;
 	
@@ -51,9 +52,9 @@ class GridControl extends Container
 		this.initializeControls();
 		
 		Browser.window.addEventListener("keydown", keyDown);
-		Browser.window.addEventListener("touchstart", touchDown);
-		Browser.window.addEventListener("touchmove", touchUpdate);
-		Browser.window.addEventListener("touchend", touchUp);
+		Browser.window.document.addEventListener("touchstart", touchDown);
+		Browser.window.document.addEventListener("touchmove", touchUpdate);
+		Browser.window.document.addEventListener("touchend", touchUp);
 		
 		
 	}
@@ -95,13 +96,13 @@ class GridControl extends Container
 	private function touchDown(eventData:TouchEvent) 
 	{
 		// Set start point for touch
-		swipeStart.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
+		swipeStart.set(eventData.touches[0].pageX, eventData.touches[0].pageY);
 	}
 	
 	private function touchUpdate(eventData:TouchEvent) 
 	{
 		// Set stop point for touch
-		swipeStop.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
+		swipeStop.set(eventData.touches[0].pageX, eventData.touches[0].pageY);
 		
 	}
 	
@@ -111,7 +112,7 @@ class GridControl extends Container
 		var diffX:Float = Math.abs(swipeStart.x - swipeStop.x);
 		var diffY:Float = Math.abs(swipeStart.y - swipeStop.y);
 		
-		if (diffX < 50 && diffY < 50)
+		if ((diffX < DEAD_ZONE && diffY < DEAD_ZONE) || (diffX > DEAD_ZONE && diffY > DEAD_ZONE))
 		{
 			return;
 		}
