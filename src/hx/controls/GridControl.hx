@@ -1,5 +1,6 @@
 package controls;
 
+import pixi.core.sprites.Sprite;
 import haxe.Timer;
 import js.Browser;
 import js.html.EventTarget;
@@ -11,6 +12,7 @@ import pixi.core.math.Point;
 import pixi.interaction.InteractionData;
 import pixi.plugins.spine.core.EventData;
 import util.MathUtil;
+import util.Asset;
 
 /**
  * ...
@@ -40,6 +42,8 @@ class GridControl extends Container
 	private var lastRemoved:Array<Node>;
 	private var lastSwipeDirection:Direction;
 	
+	private var displacementSprite:Sprite;
+	
 	public function new() 
 	{
 		super();
@@ -52,6 +56,11 @@ class GridControl extends Container
 		Browser.window.addEventListener("touchstart", touchDown);
 		Browser.window.addEventListener("touchmove", touchUpdate);
 		Browser.window.addEventListener("touchend", touchUp);
+		
+		
+		displacementSprite = Asset.getImage('displace.png', false);
+		this.addChild(displacementSprite);
+		displacementSprite.anchor.set(0.5);
 	}
 	
 	private function initializeControls():Void
@@ -98,6 +107,7 @@ class GridControl extends Container
 	{
 		// Set stop point for touch
 		swipeStop.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
+		displacementSprite.position.copy(this.toLocal(swipeStop));
 	}
 		
 	private function touchUp(eventData:TouchEvent) 
@@ -105,6 +115,13 @@ class GridControl extends Container
 		// Calculate length of the different axis
 		var diffX:Float = Math.abs(swipeStart.x - swipeStop.x);
 		var diffY:Float = Math.abs(swipeStart.y - swipeStop.y);
+		
+		trace(diffY);
+		
+		if (diffX < 200 && diffY < 200)
+		{
+			return;
+		}
 		
 		if (diffX > diffY ) 
 		{
