@@ -182,6 +182,20 @@ Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+var controls_Block = function() {
+	PIXI.Container.call(this);
+	this.initializeControls();
+};
+controls_Block.__name__ = true;
+controls_Block.__super__ = PIXI.Container;
+controls_Block.prototype = $extend(PIXI.Container.prototype,{
+	initializeControls: function() {
+		this.sprite = util_Asset.getImage("block1/block.png",true);
+		this.sprite.anchor.x = this.sprite.anchor.y = 0.5;
+		this.addChild(this.sprite);
+	}
+	,__class__: controls_Block
+});
 var controls_GameView = $hx_exports["GV"] = function() {
 	PIXI.Container.call(this);
 	this.initializeControls();
@@ -212,6 +226,22 @@ controls_GridControl.__name__ = true;
 controls_GridControl.__super__ = PIXI.Container;
 controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 	initializeControls: function() {
+		this.blockContainer = new PIXI.Container();
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_WIDTH;
+		while(_g1 < _g) {
+			var x = _g1++;
+			var _g3 = 0;
+			var _g2 = logic_GridLogic.GRID_HEIGHT;
+			while(_g3 < _g2) {
+				var y = _g3++;
+				var b = new controls_Block();
+				b.x = x * controls_GridControl.BLOCK_WIDTH + Math.max(0,x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
+				b.y = y * controls_GridControl.BLOCK_HEIGHT + Math.max(0,y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
+				this.blockContainer.addChild(b);
+			}
+		}
+		this.addChild(this.blockContainer);
 	}
 	,keyDown: function(event) {
 		var direction = null;
@@ -1732,6 +1762,9 @@ if(ArrayBuffer.prototype.slice == null) {
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
 Config.ASSETS = ["img/ui.json","img/bg.jpg"];
 Config.VERSION = "204crush 0.1";
+controls_GridControl.SPACING = 2;
+controls_GridControl.BLOCK_HEIGHT = 100;
+controls_GridControl.BLOCK_WIDTH = 100;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
 js_Boot.__toStr = ({ }).toString;

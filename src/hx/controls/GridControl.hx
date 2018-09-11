@@ -11,7 +11,17 @@ import pixi.core.display.Container;
  */
 class GridControl extends Container 
 {
+	public static var SPACING:Int = 2;
+	public static var BLOCK_HEIGHT:Int = 100;
+	public static var BLOCK_WIDTH:Int = 100;
+	
 	private var logic:GridLogic;
+	
+	private var grid:Array<Array<Block>>;
+	private var blocks:Array<Block>;
+	
+	private var blockContainer:Container;
+	
 	
 	public function new() 
 	{
@@ -26,7 +36,21 @@ class GridControl extends Container
 	
 	private function initializeControls():Void
 	{
+		this.blockContainer = new Container();
 		
+		for ( x in 0...GridLogic.GRID_WIDTH)
+		{
+			for ( y in 0...GridLogic.GRID_HEIGHT)
+			{
+				var b:Block = new Block();
+				b.x = x * BLOCK_WIDTH + Math.max(0, (x - 1)) * SPACING + BLOCK_WIDTH / 2;
+				b.y = y * BLOCK_HEIGHT + Math.max(0, (y - 1)) * SPACING + BLOCK_HEIGHT / 2;
+				
+				this.blockContainer.addChild(b);
+			}
+		}
+		
+		this.addChild(this.blockContainer);
 	}
 	
 	private function keyDown(event:KeyboardEvent):Void
