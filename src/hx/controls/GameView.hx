@@ -60,5 +60,9 @@ class GameView extends Container
 		this.x = Math.round(( size.width - bg.width * s) / 2);
 		this.y = Math.round(( size.height - bg.height * s) / 2 );
 		
+		if (size.width > size.height)
+		{
+			this.y = 0;
+		}
 	}
 }
