@@ -48,7 +48,7 @@ class Block extends Container
 		this.addChild(this.sprite);
 	}
 	
-	public function sync()
+	public function sync(middleStep:Bool)
 	{
 		var value:Int = node.value;
 		if (active && node.value == -1)
@@ -73,7 +73,7 @@ class Block extends Container
 			this.sprite.texture = textures[value];
 			//Move
 			Tween.removeTweens(this);
-			Tween.get(this).to({
+			Tween.get(this).wait(middleStep?250:10).to({
 				x:node.x * GridControl.BLOCK_WIDTH + Math.max(0, node.x-1)*GridControl.SPACING + GridControl.BLOCK_WIDTH/2,
 				y:node.y * GridControl.BLOCK_HEIGHT + Math.max(0, node.y - 1) * GridControl.SPACING + GridControl.BLOCK_HEIGHT / 2
 			}, 300, Ease.bounceOut);
