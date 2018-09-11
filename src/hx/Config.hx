@@ -17,6 +17,7 @@ class Config
 			
 		"img/ui.json",
 		"img/bg.jpg",
+		"img/trail.png",
 		
 	];
 	
