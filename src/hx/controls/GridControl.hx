@@ -116,8 +116,6 @@ class GridControl extends Container
 		var diffX:Float = Math.abs(swipeStart.x - swipeStop.x);
 		var diffY:Float = Math.abs(swipeStart.y - swipeStop.y);
 		
-		trace(diffY);
-		
 		if (diffX < 200 && diffY < 200)
 		{
 			return;
