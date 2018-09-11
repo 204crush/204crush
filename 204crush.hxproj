@@ -16,8 +16,6 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src\hx" />
-    <class path="..\..\..\Externs\Framework\v5" />
-    <class path="..\..\..\Externs\CreateJS\v3" />
     <class path="externs" />
   </classpaths>
   <!-- Build options -->
@@ -25,7 +23,7 @@
     <option directives="" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="GameUI" />
+    <option mainClass="Main" />
     <option enabledebug="False" />
     <option additional="" />
   </build>
