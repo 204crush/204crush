@@ -47,6 +47,9 @@ class GridControl extends Container
 	{
 		super();
 		
+		BLOCK_HEIGHT =Math.floor( 130 * 6 / GridLogic.GRID_HEIGHT);
+		BLOCK_WIDTH =Math.floor( 130 * 6 / GridLogic.GRID_HEIGHT);
+		
 		this.initializeControls();
 		
 		Browser.window.addEventListener("keydown", keyDown);
@@ -153,7 +156,7 @@ class GridControl extends Container
 		swipeStop.set(0, 0);
 		swipeDirection.set(0, 0);
 	}
-
+	
 	private function keyDown(event:KeyboardEvent):Void
 	{
 		var direction:Direction = null;
@@ -178,14 +181,14 @@ class GridControl extends Container
 	
 	private function doSwipe(direction:Direction):Void
 	{
-		if (direction != null && enabled)
+		if (direction != null && enabled )
 		{
-			enabled = true;
+			enabled = false;
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
 			this.syncNodes(false);
 			lastRemoved = this.logic.remove();
-			Timer.delay(nextStep, 350);
+			Timer.delay(nextStep, 550);
 		}
 		/*
 			while (removed.length > 0)
@@ -215,10 +218,12 @@ class GridControl extends Container
 			this.logic.swipe(lastSwipeDirection);
 			this.syncNodes(true);
 			lastRemoved = this.logic.remove();
-			Timer.delay(nextStep, 750);
+			if (lastRemoved.length == 0) enabled = true;
+			Timer.delay(nextStep, 600);
 		}
 		else
 		{
+			
 			this.logic.spawnRandom();
 			this.syncNodes(false);
 			this.enabled = true;

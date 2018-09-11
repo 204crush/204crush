@@ -34,23 +34,6 @@ class GridLogic
 	
 	public function new() 
 	{
-		var regWidth:EReg = new EReg("width=([0-9]*)", "");
-		var regHeight:EReg = new EReg("height=([0-9]*)", "");
-		var regValue:EReg = new EReg("maxvalue=([0-9]*)", "");
-		
-		if (regWidth.match( Browser.location.hash))
-		{
-			GRID_WIDTH = Std.parseInt(regWidth.matched(1));
-		}
-		if (regHeight.match( Browser.location.hash))
-		{
-			GRID_HEIGHT = Std.parseInt(regHeight.matched(1));
-		}
-		if (regValue.match( Browser.location.hash))
-		{
-			MAX_VALUE = Std.parseInt(regValue.matched(1));
-		}
-		
 		trace(GRID_WIDTH , GRID_HEIGHT, MAX_VALUE);
 		
 		grid = [];
@@ -69,6 +52,37 @@ class GridLogic
 				nodes.push(n);
 			}
 		}
+	}
+	
+	public static function INIT():Void
+	{
+		var regWidth:EReg = new EReg("width=([0-9]*)", "");
+		var regHeight:EReg = new EReg("height=([0-9]*)", "");
+		var regValue:EReg = new EReg("maxvalue=([0-9]*)", "");
+		var regRMin:EReg = new EReg("rmin=([0-9]*)", "");
+		var regRMax:EReg = new EReg("rmax=([0-9]*)", "");
+		
+		if (regWidth.match( Browser.location.hash))
+		{
+			GRID_WIDTH = Std.parseInt(regWidth.matched(1));
+		}
+		if (regHeight.match( Browser.location.hash))
+		{
+			GRID_HEIGHT = Std.parseInt(regHeight.matched(1));
+		}
+		if (regValue.match( Browser.location.hash))
+		{
+			MAX_VALUE = Std.parseInt(regValue.matched(1));
+		}
+		if (regRMin.match( Browser.location.hash))
+		{
+			RANDOM_SPAWN_AMOUNT.min = Std.parseInt(regRMin.matched(1));
+		}
+		if (regRMax.match( Browser.location.hash))
+		{
+			RANDOM_SPAWN_AMOUNT.max = Std.parseInt(regRMax.matched(1));
+		}
+
 	}
 	
 	/**
@@ -275,8 +289,8 @@ class GridLogic
 	{
 		//Trivial ignores.
 		if (node.value == -1) return null;
-		if (node.x >= GRID_WIDTH - 2) return null;
-		if (node.y >= GRID_HEIGHT - 2) return null;
+		if (node.x > GRID_WIDTH - 2) return null;
+		if (node.y > GRID_HEIGHT - 2) return null;
 		
 		var ret:Array<Node> = [];
 		if(grid[node.x + 1][node.y + 1].value == node.value &&

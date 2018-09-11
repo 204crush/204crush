@@ -182,6 +182,15 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">../assets/images/blocks/block_green/blockie_green.png</key>
+            <key type="filename">../assets/images/blocks/block_green/death/blockie_purple_death01.png</key>
+            <key type="filename">../assets/images/blocks/block_green/death/blockie_purple_death02.png</key>
+            <key type="filename">../assets/images/blocks/block_green/default/blockie_purple.png</key>
+            <key type="filename">../assets/images/blocks/block_green/down/blockie_purple_moving_down.png</key>
+            <key type="filename">../assets/images/blocks/block_green/idle/blockie_purple_idle01.png</key>
+            <key type="filename">../assets/images/blocks/block_green/idle/blockie_purple_idle02.png</key>
+            <key type="filename">../assets/images/blocks/block_green/left/blockie_purple_moving_left.png</key>
+            <key type="filename">../assets/images/blocks/block_green/right/blockie_purple_moving_right.png</key>
+            <key type="filename">../assets/images/blocks/block_green/up/blockie_purple_moving_up.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0,0</point_f>

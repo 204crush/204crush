@@ -4,6 +4,7 @@ import controls.StartView;
 import createjs.soundjs.Sound;
 import createjs.tweenjs.Tween;
 import haxe.Timer;
+import logic.GridLogic;
 import particles.ParticleManager;
 
 import js.Browser;
@@ -93,6 +94,8 @@ class Main
 	 */
 	private function onAssetsLoaded():Void
 	{
+		GridLogic.INIT();
+		
 		Browser.document.getElementById("preload").remove();
 		this.initializeRenderer();
 		this.initializeControls();
