@@ -48,6 +48,15 @@ class Block extends Container
 		//TEMP SCALE
 		sprite.width = sprite.height = GridControl.BLOCK_HEIGHT-10*6/GridLogic.GRID_HEIGHT;
 		this.addChild(this.sprite);
+		
+		this.interactive = true;
+		this.addListener("click", onAnnoyClick);
+	}
+	private function onAnnoyClick():Void
+	{
+		var os:Float = this.sprite.scale.x;
+	//	Tween.get(this.sprite.scale).to({x: os * 1.25}, 390, Ease.quadInOut).to({x:os}, 40, Ease.quadInOut);
+	//	Tween.get(this.sprite.scale).to({y: os * 1.25}, 450, Ease.quadInOut).to({y:os}, 80, Ease.quadInOut);
 	}
 	
 	public function sync(middleStep:Bool)
