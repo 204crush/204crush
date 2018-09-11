@@ -6,6 +6,7 @@ import js.html.SimpleGestureEvent;
 import logic.GridLogic.Node;
 import pixi.core.display.Container;
 import pixi.core.sprites.Sprite;
+import pixi.core.textures.Texture;
 import util.Asset;
 
 /**
@@ -19,6 +20,8 @@ class Block extends Container
 
 	private var active:Bool = false;
 	
+	private var textures:Array<Texture>;
+	
 	public function new() 
 	{
 		super();
@@ -27,15 +30,25 @@ class Block extends Container
 	
 	private function initializeControls():Void
 	{
+		textures = [
+			Asset.getTexture("block_blue/blockie_blue.png", true),
+			Asset.getTexture("block_green/blockie_green.png", true),
+			Asset.getTexture("block_orange/blockie_orange.png", true),
+			Asset.getTexture("block_purple/blockie_purple.png", true),
+			//Asset.getTexture("block_blue/blockie_blue.png", true),
+		];
+		
 		this.sprite = Asset.getImage("temp.png", true);
 		this.sprite.anchor.x = this.sprite.anchor.y = 0.5;
+		this.sprite.x = -6;
+		this.sprite.y = -6;
 		this.scale.x = this.scale.y = 0;
 		//TEMP SCALE
 		sprite.width = sprite.height = 120;
 		this.addChild(this.sprite);
 	}
 	
-	public function sync()
+	public function sync(middleStep:Bool)
 	{
 		var value:Int = node.value;
 		if (active && node.value == -1)
@@ -47,7 +60,7 @@ class Block extends Container
 		}
 		else if (!active && node.value >= 0)
 		{
-			this.sprite.tint = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0x0, 0xffffff][value];
+			this.sprite.texture = textures[value];
 			//New spawn
 			this.active = true;
 			this.x = node.x * GridControl.BLOCK_WIDTH + Math.max(0, node.x-1)*GridControl.SPACING + GridControl.BLOCK_WIDTH/2;
@@ -57,10 +70,10 @@ class Block extends Container
 		}
 		else if(active)
 		{
-			this.sprite.tint = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0x0, 0xffffff][value];
+			this.sprite.texture = textures[value];
 			//Move
 			Tween.removeTweens(this);
-			Tween.get(this).to({
+			Tween.get(this).wait(middleStep?250:10).to({
 				x:node.x * GridControl.BLOCK_WIDTH + Math.max(0, node.x-1)*GridControl.SPACING + GridControl.BLOCK_WIDTH/2,
 				y:node.y * GridControl.BLOCK_HEIGHT + Math.max(0, node.y - 1) * GridControl.SPACING + GridControl.BLOCK_HEIGHT / 2
 			}, 300, Ease.bounceOut);

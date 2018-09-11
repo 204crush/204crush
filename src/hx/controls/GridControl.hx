@@ -85,15 +85,15 @@ class GridControl extends Container
 		
 		this.addChild(this.blockContainer);
 		
-		this.syncNodes();
+		this.syncNodes(false);
 		enabled = true;
 	}
 	
-	private function syncNodes():Void
+	private function syncNodes(middleStep:Bool):Void
 	{
 		for ( b in blocks)
 		{
-			b.sync();
+			b.sync(middleStep);
 		}
 	}
 	
@@ -109,7 +109,7 @@ class GridControl extends Container
 		swipeStop.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
 		displacementSprite.position.copy(this.toLocal(swipeStop));
 	}
-		
+	
 	private function touchUp(eventData:TouchEvent) 
 	{
 		// Calculate length of the different axis
@@ -166,7 +166,7 @@ class GridControl extends Container
 		{
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
-			this.syncNodes();
+			this.syncNodes(false);
 			lastRemoved = this.logic.remove();
 			Timer.delay(nextStep, 350);
 		}
@@ -196,14 +196,14 @@ class GridControl extends Container
 		{
 			this.logic.clearRemoved(lastRemoved);
 			this.logic.swipe(lastSwipeDirection);
-			this.syncNodes();
+			this.syncNodes(true);
 			lastRemoved = this.logic.remove();
-			Timer.delay(nextStep, 350);
+			Timer.delay(nextStep, 750);
 		}
 		else
 		{
 			this.logic.spawnRandom();
-			this.syncNodes();
+			this.syncNodes(false);
 			this.enabled = true;
 		}
 	}
