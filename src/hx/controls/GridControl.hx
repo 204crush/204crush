@@ -3,11 +3,13 @@ package controls;
 import js.Browser;
 import js.html.EventTarget;
 import js.html.KeyboardEvent;
+import js.html.TouchEvent;
 import logic.GridLogic;
 import pixi.core.display.Container;
 import pixi.core.math.Point;
 import pixi.interaction.InteractionData;
 import pixi.plugins.spine.core.EventData;
+import util.MathUtil;
 
 /**
  * ...
@@ -28,6 +30,10 @@ class GridControl extends Container
 	
 	private var moves:Int = 0;
 	
+	private var swipeStart:Point = new Point(0.0, 0.0);
+	private var swipeStop:Point = new Point(0.0, 0.0);
+	private var swipeDirection:Point = new Point(0.0, 0.0);
+	
 	public function new() 
 	{
 		super();
@@ -37,6 +43,37 @@ class GridControl extends Container
 		this.initializeControls();
 		
 		Browser.window.addEventListener("keydown", keyDown);
+		Browser.window.addEventListener("touchstart", function(eventData:TouchEvent) 
+		{
+			// Set start point for touch
+			swipeStart.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
+		});
+		
+		Browser.window.addEventListener("touchmove", function(eventData:TouchEvent) 
+		{
+			// Set stop point for touch
+			swipeStop.set(eventData.touches[0].clientX, eventData.touches[0].clientY);
+		});
+		
+		Browser.window.addEventListener("touchend", function() 
+		{
+			// Calculate length of the different axis
+			var diffX:Float = Math.abs(swipeStart.x - swipeStop.x);
+			var diffY:Float = Math.abs(swipeStart.y - swipeStop.y);
+			
+			if (diffX > diffY ) 
+			{
+				// Set move in X-Axis
+				swipeDirection.set(swipeStart.x > swipeStop.x ? -1 : 1, 0);
+			} else
+			{
+				// Set move in Y-Axis
+				swipeDirection.set(0, swipeStart.y > swipeStop.y ? -1 : 1);
+			}
+			
+			//Fire KeyDown logic
+			//keyDown;
+		});
 	}
 	
 	private function initializeControls():Void
@@ -75,19 +112,19 @@ class GridControl extends Container
 	private function keyDown(event:KeyboardEvent):Void
 	{
 		var direction:Direction = null;
-		if (event.keyCode == 38) //up
+		if (event.keyCode == 38 || swipeDirection.y < 0) //up
 		{
 			direction = Direction.up;
 		}
-		else if (event.keyCode == 37)//left
+		else if (event.keyCode == 37 || swipeDirection.x < 0)//left
 		{
 			direction = Direction.left;
 		}
-		else if (event.keyCode == 40)//down
+		else if (event.keyCode == 40 || swipeDirection.y > 0)//down
 		{
 			direction = Direction.down;
 		}
-		else if (event.keyCode == 39)//right
+		else if (event.keyCode == 39 || swipeDirection.x > 0)//right
 		{
 			direction = Direction.right;
 		}
@@ -112,5 +149,9 @@ class GridControl extends Container
 			trace(moves);
 		}
 		
+		// Reset swipe direction logic
+		swipeStart.set(0, 0);
+		swipeStop.set(0, 0);
+		swipeDirection.set(0, 0);
 	}
 }
