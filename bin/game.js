@@ -67,14 +67,14 @@ HxOverrides.remove = function(a,obj) {
 };
 var Main = $hx_exports["Game"] = function() {
 	this.tickListeners = [];
-	console.log("new game");
+	haxe_Log.trace("new game",{ fileName : "Main.hx", lineNumber : 80, className : "Main", methodName : "new"});
 	createjs.Ticker = null;
 	util_LoaderWrapper.LOAD_ASSETS(Config.ASSETS,$bind(this,this.onAssetsLoaded));
 	sounds_Sounds.initSounds();
 };
 Main.__name__ = true;
 Main.main = function() {
-	console.log("Main");
+	haxe_Log.trace("Main",{ fileName : "Main.hx", lineNumber : 69, className : "Main", methodName : "main"});
 	$().ready(function() {
 		Main.instance = new Main();
 	});
@@ -134,6 +134,7 @@ Main.prototype = {
 		sounds_Sounds.playEffect(sounds_Sounds.TOGGLE);
 		this.start.interactiveChildren = false;
 		this.start.visible = false;
+		this.game.prepare();
 		this.game.visible = true;
 		haxe_Timer.delay(function() {
 			_gthis.game.start();
@@ -183,6 +184,16 @@ Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+Std.parseInt = function(x) {
+	var v = parseInt(x,10);
+	if(v == 0 && (HxOverrides.cca(x,1) == 120 || HxOverrides.cca(x,1) == 88)) {
+		v = parseInt(x);
+	}
+	if(isNaN(v)) {
+		return null;
+	}
+	return v;
+};
 var controls_Block = function() {
 	this.active = false;
 	PIXI.Container.call(this);
@@ -192,20 +203,28 @@ controls_Block.__name__ = true;
 controls_Block.__super__ = PIXI.Container;
 controls_Block.prototype = $extend(PIXI.Container.prototype,{
 	initializeControls: function() {
+		this.textures = [util_Asset.getTexture("blockie_blue.png",true),util_Asset.getTexture("blockie_green.png",true),util_Asset.getTexture("blockie_orange.png",true),util_Asset.getTexture("blockie_purple.png",true)];
 		this.sprite = util_Asset.getImage("temp.png",true);
 		this.sprite.anchor.x = this.sprite.anchor.y = 0.5;
+		this.sprite.x = -6;
+		this.sprite.y = -6;
 		this.scale.x = this.scale.y = 0;
-		this.sprite.width = this.sprite.height = 120;
+		this.sprite.width = this.sprite.height = controls_GridControl.BLOCK_HEIGHT - 60 / logic_GridLogic.GRID_HEIGHT;
 		this.addChild(this.sprite);
+		this.interactive = true;
+		this.addListener("click",$bind(this,this.onAnnoyClick));
 	}
-	,sync: function() {
+	,onAnnoyClick: function() {
+		var os = this.sprite.scale.x;
+	}
+	,sync: function(middleStep) {
 		var value = this.node.value;
 		if(this.active && this.node.value == -1) {
 			this.active = false;
 			createjs.Tween.removeTweens(this.scale);
 			createjs.Tween.get(this.scale).to({ x : 0, y : 0},250,createjs.Ease.quadIn);
 		} else if(!this.active && this.node.value >= 0) {
-			this.sprite.tint = [16711680,65280,255,16776960,16711935,65535,0,16777215][value];
+			this.sprite.texture = this.textures[value];
 			this.active = true;
 			this.x = this.node.x * controls_GridControl.BLOCK_WIDTH + Math.max(0,this.node.x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
 			this.y = this.node.y * controls_GridControl.BLOCK_HEIGHT + Math.max(0,this.node.y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
@@ -214,11 +233,11 @@ controls_Block.prototype = $extend(PIXI.Container.prototype,{
 			var tmp1 = createjs.Ease.getBackOut(0.35);
 			tmp.to({ x : 1, y : 1},250,tmp1);
 		} else if(this.active) {
-			this.sprite.tint = [16711680,65280,255,16776960,16711935,65535,0,16777215][value];
+			this.sprite.texture = this.textures[value];
 			createjs.Tween.removeTweens(this);
 			var tmp2 = this.node.x * controls_GridControl.BLOCK_WIDTH + Math.max(0,this.node.x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
 			var tmp3 = this.node.y * controls_GridControl.BLOCK_HEIGHT + Math.max(0,this.node.y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
-			createjs.Tween.get(this).to({ x : tmp2, y : tmp3},300,createjs.Ease.bounceOut);
+			createjs.Tween.get(this).wait(middleStep ? 250 : 10).to({ x : tmp2, y : tmp3},300,createjs.Ease.bounceOut);
 		}
 	}
 	,__class__: controls_Block
@@ -235,10 +254,16 @@ controls_GameView.prototype = $extend(PIXI.Container.prototype,{
 		this.control = new controls_GridControl();
 		this.control.x = 640;
 		this.control.y = 220;
+		this.score = new controls_Score();
 		this.addChild(this.bg);
 		this.addChild(this.control);
+		this.addChild(this.score);
+	}
+	,prepare: function() {
+		this.control.prepare();
 	}
 	,start: function() {
+		this.control.enabled = true;
 	}
 	,resize: function(size) {
 		this.size = size;
@@ -254,13 +279,16 @@ controls_GameView.prototype = $extend(PIXI.Container.prototype,{
 });
 var controls_GridControl = function() {
 	this.enabled = false;
+	this.swipeDirection = new PIXI.Point(0.0,0.0);
+	this.swipeStop = new PIXI.Point(0.0,0.0);
+	this.swipeStart = new PIXI.Point(0.0,0.0);
 	this.moves = 0;
 	PIXI.Container.call(this);
-	this.logic = new logic_GridLogic();
-	this.logic.spawnRandom();
-	this.logic.printGrid();
 	this.initializeControls();
 	window.addEventListener("keydown",$bind(this,this.keyDown));
+	window.document.addEventListener("touchstart",$bind(this,this.touchDown));
+	window.document.addEventListener("touchmove",$bind(this,this.touchUpdate));
+	window.document.addEventListener("touchend",$bind(this,this.touchUp));
 };
 controls_GridControl.__name__ = true;
 controls_GridControl.__super__ = PIXI.Container;
@@ -282,23 +310,73 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 				b.x = x * controls_GridControl.BLOCK_WIDTH + Math.max(0,x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
 				b.y = y * controls_GridControl.BLOCK_HEIGHT + Math.max(0,y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
 				this.grid[x][y] = b;
-				b.node = this.logic.grid[x][y];
 				this.blocks.push(b);
 				this.blockContainer.addChild(b);
 			}
 		}
 		this.addChild(this.blockContainer);
-		this.syncNodes();
 		this.enabled = true;
 	}
-	,syncNodes: function() {
+	,prepare: function() {
+		this.logic = new logic_GridLogic();
+		this.logic.spawnRandom();
+		this.logic.spawnRandom();
+		this.logic.spawnRandom();
+		this.logic.printGrid();
+		controls_GridControl.BLOCK_HEIGHT = Math.floor(6 / logic_GridLogic.GRID_HEIGHT * 130);
+		controls_GridControl.BLOCK_WIDTH = Math.floor(6 / logic_GridLogic.GRID_WIDTH * 130);
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_WIDTH;
+		while(_g1 < _g) {
+			var x = _g1++;
+			var _g3 = 0;
+			var _g2 = logic_GridLogic.GRID_HEIGHT;
+			while(_g3 < _g2) {
+				var y = _g3++;
+				var b = this.grid[x][y];
+				b.node = this.logic.grid[x][y];
+			}
+		}
+		this.enabled = false;
+		this.syncNodes(false);
+	}
+	,syncNodes: function(middleStep) {
 		var _g = 0;
 		var _g1 = this.blocks;
 		while(_g < _g1.length) {
 			var b = _g1[_g];
 			++_g;
-			b.sync();
+			b.sync(middleStep);
 		}
+	}
+	,touchDown: function(eventData) {
+		this.swipeStart.set(eventData.touches[0].pageX,eventData.touches[0].pageY);
+	}
+	,touchUpdate: function(eventData) {
+		this.swipeStop.set(eventData.touches[0].pageX,eventData.touches[0].pageY);
+	}
+	,touchUp: function(eventData) {
+		var diffX = Math.abs(this.swipeStart.x - this.swipeStop.x);
+		var diffY = Math.abs(this.swipeStart.y - this.swipeStop.y);
+		if(diffX < controls_GridControl.DEAD_ZONE && diffY < controls_GridControl.DEAD_ZONE || diffX > controls_GridControl.DEAD_ZONE && diffY > controls_GridControl.DEAD_ZONE) {
+			return;
+		}
+		if(diffX > diffY) {
+			if(this.swipeStart.x > this.swipeStop.x) {
+				this.doSwipe(logic_Direction.left);
+			} else {
+				this.doSwipe(logic_Direction.right);
+			}
+		} else if(diffX < diffY) {
+			if(this.swipeStart.y > this.swipeStop.y) {
+				this.doSwipe(logic_Direction.up);
+			} else {
+				this.doSwipe(logic_Direction.down);
+			}
+		}
+		this.swipeStart.set(0,0);
+		this.swipeStop.set(0,0);
+		this.swipeDirection.set(0,0);
 	}
 	,keyDown: function(event) {
 		var direction = null;
@@ -315,9 +393,10 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 	}
 	,doSwipe: function(direction) {
 		if(direction != null && this.enabled) {
+			this.enabled = true;
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
-			this.syncNodes();
+			this.syncNodes(false);
 			this.lastRemoved = this.logic.remove();
 			haxe_Timer.delay($bind(this,this.nextStep),350);
 		}
@@ -326,16 +405,24 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 		if(this.lastRemoved.length > 0) {
 			this.logic.clearRemoved(this.lastRemoved);
 			this.logic.swipe(this.lastSwipeDirection);
-			this.syncNodes();
+			this.syncNodes(true);
 			this.lastRemoved = this.logic.remove();
-			haxe_Timer.delay($bind(this,this.nextStep),350);
+			haxe_Timer.delay($bind(this,this.nextStep),750);
 		} else {
 			this.logic.spawnRandom();
-			this.syncNodes();
+			this.syncNodes(false);
 			this.enabled = true;
 		}
 	}
 	,__class__: controls_GridControl
+});
+var controls_Score = function() {
+	PIXI.Container.call(this);
+};
+controls_Score.__name__ = true;
+controls_Score.__super__ = PIXI.Container;
+controls_Score.prototype = $extend(PIXI.Container.prototype,{
+	__class__: controls_Score
 });
 var controls_StartView = function() {
 	PIXI.Container.call(this);
@@ -364,6 +451,11 @@ controls_StartView.prototype = $extend(PIXI.Container.prototype,{
 });
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = true;
+var haxe_Log = function() { };
+haxe_Log.__name__ = true;
+haxe_Log.trace = function(v,infos) {
+	js_Boot.__trace(v,infos);
+};
 var haxe_Timer = function(time_ms) {
 	var me = this;
 	this.id = setInterval(function() {
@@ -581,6 +673,35 @@ js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 });
 var js_Boot = function() { };
 js_Boot.__name__ = true;
+js_Boot.__unhtml = function(s) {
+	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+};
+js_Boot.__trace = function(v,i) {
+	var msg = i != null ? i.fileName + ":" + i.lineNumber + ": " : "";
+	msg += js_Boot.__string_rec(v,"");
+	if(i != null && i.customParams != null) {
+		var _g = 0;
+		var _g1 = i.customParams;
+		while(_g < _g1.length) {
+			var v1 = _g1[_g];
+			++_g;
+			msg += "," + js_Boot.__string_rec(v1,"");
+		}
+	}
+	var d;
+	var tmp;
+	if(typeof(document) != "undefined") {
+		d = document.getElementById("haxe:trace");
+		tmp = d != null;
+	} else {
+		tmp = false;
+	}
+	if(tmp) {
+		d.innerHTML += js_Boot.__unhtml(msg) + "<br/>";
+	} else if(typeof console != "undefined" && console.log != null) {
+		console.log(msg);
+	}
+};
 js_Boot.getClass = function(o) {
 	if((o instanceof Array) && o.__enum__ == null) {
 		return Array;
@@ -893,6 +1014,19 @@ logic_Orientation.vertical = ["vertical",1];
 logic_Orientation.vertical.toString = $estr;
 logic_Orientation.vertical.__enum__ = logic_Orientation;
 var logic_GridLogic = function() {
+	var regWidth = new EReg("width=([0-9]*)","");
+	var regHeight = new EReg("height=([0-9]*)","");
+	var regValue = new EReg("maxvalue=([0-9]*)","");
+	if(regWidth.match(window.location.hash)) {
+		logic_GridLogic.GRID_WIDTH = Std.parseInt(regWidth.matched(1));
+	}
+	if(regHeight.match(window.location.hash)) {
+		logic_GridLogic.GRID_HEIGHT = Std.parseInt(regHeight.matched(1));
+	}
+	if(regValue.match(window.location.hash)) {
+		logic_GridLogic.MAX_VALUE = Std.parseInt(regValue.matched(1));
+	}
+	haxe_Log.trace(logic_GridLogic.GRID_WIDTH,{ fileName : "GridLogic.hx", lineNumber : 54, className : "logic.GridLogic", methodName : "new", customParams : [logic_GridLogic.GRID_HEIGHT,logic_GridLogic.MAX_VALUE]});
 	this.grid = [];
 	this.nodes = [];
 	var _g1 = 0;
@@ -932,6 +1066,9 @@ logic_GridLogic.prototype = {
 			throw new js__$Boot_HaxeError("Randomizing node with existing value.");
 		}
 		node.value = Math.floor(Math.random() * logic_GridLogic.MAX_VALUE);
+		if(this.remove().length > 0) {
+			node.value = -1;
+		}
 	}
 	,swipe: function(direction) {
 		if(direction == logic_Direction.right) {
@@ -1062,21 +1199,38 @@ logic_GridLogic.prototype = {
 		}
 		var removed = [];
 		var _g3 = 0;
-		while(_g3 < found.length) {
-			var line = found[_g3];
+		var _g12 = this.nodes;
+		while(_g3 < _g12.length) {
+			var n = _g12[_g3];
 			++_g3;
-			var _g12 = 0;
-			var _g21 = line.nodes;
-			while(_g12 < _g21.length) {
-				var n = _g21[_g12];
-				++_g12;
-				if(removed.indexOf(n) == -1) {
-					removed.push(n);
+			var match = this.testSquareMatch(n);
+			if(match != null) {
+				var _g21 = 0;
+				while(_g21 < match.length) {
+					var rn = match[_g21];
+					++_g21;
+					if(removed.indexOf(rn) == -1) {
+						removed.push(rn);
+					}
+				}
+			}
+		}
+		var _g4 = 0;
+		while(_g4 < found.length) {
+			var line = found[_g4];
+			++_g4;
+			var _g13 = 0;
+			var _g22 = line.nodes;
+			while(_g13 < _g22.length) {
+				var n1 = _g22[_g13];
+				++_g13;
+				if(removed.indexOf(n1) == -1) {
+					removed.push(n1);
 				}
 			}
 		}
 		if(removed.length > 0) {
-			console.log("REMVOED: " + removed.length);
+			haxe_Log.trace("REMVOED: " + removed.length,{ fileName : "GridLogic.hx", lineNumber : 262, className : "logic.GridLogic", methodName : "remove"});
 		}
 		return removed;
 	}
@@ -1087,6 +1241,25 @@ logic_GridLogic.prototype = {
 			++_g;
 			n.value = -1;
 		}
+	}
+	,testSquareMatch: function(node) {
+		if(node.value == -1) {
+			return null;
+		}
+		if(node.x >= logic_GridLogic.GRID_WIDTH - 2) {
+			return null;
+		}
+		if(node.y >= logic_GridLogic.GRID_HEIGHT - 2) {
+			return null;
+		}
+		var ret = [];
+		if(this.grid[node.x + 1][node.y + 1].value == node.value && this.grid[node.x][node.y + 1].value == node.value && this.grid[node.x + 1][node.y].value == node.value) {
+			ret.push(node);
+			ret.push(this.grid[node.x + 1][node.y + 1]);
+			ret.push(this.grid[node.x][node.y + 1]);
+			ret.push(this.grid[node.x + 1][node.y]);
+		}
+		return ret;
 	}
 	,sweepTestHorizontal: function(found,y) {
 		var current = [this.grid[0][y]];
@@ -1157,7 +1330,7 @@ logic_GridLogic.prototype = {
 			}
 			s += "\n";
 		}
-		console.log(s);
+		haxe_Log.trace(s,{ fileName : "GridLogic.hx", lineNumber : 370, className : "logic.GridLogic", methodName : "printGrid"});
 	}
 	,__class__: logic_GridLogic
 };
@@ -1384,7 +1557,7 @@ sounds_Sounds.handleInitClick = function(event) {
 };
 sounds_Sounds.playEffect = function(name,loops,volume,delay) {
 	if(!sounds_Sounds.soundRegistered(name)) {
-		console.log("sound " + name + " not found");
+		haxe_Log.trace("sound " + name + " not found",{ fileName : "Sounds.hx", lineNumber : 189, className : "sounds.Sounds", methodName : "playEffect"});
 	}
 	if(!createjs.Sound.getMute() && sounds_Sounds.initok && sounds_Sounds.soundRegistered(name)) {
 		if(volume == null) {
@@ -1450,7 +1623,7 @@ util_Asset.init = function(loader) {
 };
 util_Asset.getResource = function(name) {
 	if(!Object.prototype.hasOwnProperty.call(util_Asset._loader.resources,name)) {
-		console.log("Resource " + name + " not found!");
+		haxe_Log.trace("Resource " + name + " not found!",{ fileName : "Asset.hx", lineNumber : 39, className : "util.Asset", methodName : "getResource"});
 	}
 	return Reflect.field(util_Asset._loader.resources,name);
 };
@@ -1468,7 +1641,7 @@ util_Asset.getTexture = function(name,fromSheet) {
 		tex = PIXI.Texture.fromImage(name);
 	}
 	if(tex == null) {
-		console.log("Warning: Asset " + name + " not found.");
+		haxe_Log.trace("Warning: Asset " + name + " not found.",{ fileName : "Asset.hx", lineNumber : 81, className : "util.Asset", methodName : "getTexture"});
 	}
 	if(tex != null && util_Asset._prepared.indexOf(tex.baseTexture) == -1) {
 		util_Asset._prepared.push(tex.baseTexture);
@@ -1488,7 +1661,7 @@ util_Asset.getImage = function(name,fromSheet) {
 		var sprite1 = new PIXI.Sprite(t);
 	}
 	if(sprite == null) {
-		console.log("Warning: Asset " + name + " not found.");
+		haxe_Log.trace("Warning: Asset " + name + " not found.",{ fileName : "Asset.hx", lineNumber : 114, className : "util.Asset", methodName : "getImage"});
 	}
 	if(sprite != null && util_Asset._prepared.indexOf(sprite.texture.baseTexture) == -1) {
 		util_Asset._prepared.push(sprite.texture.baseTexture);
@@ -1836,11 +2009,12 @@ if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_html_compat_ArrayBuffer.sliceImpl;
 }
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
-Config.ASSETS = ["img/ui.json","img/bg.jpg"];
+Config.ASSETS = ["img/ui.json","img/block_green.json","img/block_purple.json","img/block_orange.json","img/block_blue.json","img/bg.jpg"];
 Config.VERSION = "204crush 0.1";
 controls_GridControl.SPACING = 0;
 controls_GridControl.BLOCK_HEIGHT = 130;
 controls_GridControl.BLOCK_WIDTH = 130;
+controls_GridControl.DEAD_ZONE = 50;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
 js_Boot.__toStr = ({ }).toString;

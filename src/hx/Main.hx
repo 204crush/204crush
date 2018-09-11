@@ -180,6 +180,7 @@ class Main
 		Sounds.playEffect(Sounds.TOGGLE);
 		this.start.interactiveChildren = false;
 		this.start.visible = false;
+		game.prepare();
 		this.game.visible = true;
 		Timer.delay(function(){
 			this.game.start();

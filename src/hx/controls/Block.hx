@@ -32,10 +32,10 @@ class Block extends Container
 	private function initializeControls():Void
 	{
 		textures = [
-			Asset.getTexture("block_blue/blockie_blue.png", true),
-			Asset.getTexture("block_green/blockie_green.png", true),
-			Asset.getTexture("block_orange/blockie_orange.png", true),
-			Asset.getTexture("block_purple/blockie_purple.png", true),
+			Asset.getTexture("blockie_blue.png", true),
+			Asset.getTexture("blockie_green.png", true),
+			Asset.getTexture("blockie_orange.png", true),
+			Asset.getTexture("blockie_purple.png", true),
 			//Asset.getTexture("block_blue/blockie_blue.png", true),
 		];
 		

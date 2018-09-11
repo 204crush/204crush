@@ -38,7 +38,7 @@ class GridControl extends Container
 	private var swipeStop:Point = new Point(0.0, 0.0);
 	private var swipeDirection:Point = new Point(0.0, 0.0);
 
-	private var enabled:Bool = false;
+	public var enabled:Bool = false;
 	
 	private var lastRemoved:Array<Node>;
 	private var lastSwipeDirection:Direction;
@@ -46,12 +46,6 @@ class GridControl extends Container
 	public function new() 
 	{
 		super();
-		this.logic = new GridLogic();
-		this.logic.spawnRandom();
-		this.logic.printGrid();
-		
-		BLOCK_HEIGHT = Math.floor(6/GridLogic.GRID_HEIGHT * 130);
-		BLOCK_WIDTH = Math.floor(6/GridLogic.GRID_WIDTH * 130);
 		
 		this.initializeControls();
 		
@@ -77,7 +71,7 @@ class GridControl extends Container
 				b.x = x * BLOCK_WIDTH + Math.max(0, (x - 1)) * SPACING + BLOCK_WIDTH / 2;
 				b.y = y * BLOCK_HEIGHT + Math.max(0, (y - 1)) * SPACING + BLOCK_HEIGHT / 2;
 				this.grid[x][y] = b;
-				b.node = logic.grid[x][y];
+				//b.node = logic.grid[x][y];
 				this.blocks.push(b);
 				this.blockContainer.addChild(b);
 			}
@@ -85,8 +79,32 @@ class GridControl extends Container
 		
 		this.addChild(this.blockContainer);
 		
-		this.syncNodes(false);
+		
 		enabled = true;
+	}
+	
+	public function prepare():Void
+	{
+		this.logic = new GridLogic();
+		this.logic.spawnRandom();
+		this.logic.spawnRandom();
+		this.logic.spawnRandom();
+		this.logic.printGrid();
+		
+		BLOCK_HEIGHT = Math.floor(6/GridLogic.GRID_HEIGHT * 130);
+		BLOCK_WIDTH = Math.floor(6/GridLogic.GRID_WIDTH * 130);
+		
+		for ( x in 0...GridLogic.GRID_WIDTH)
+		{
+			for ( y in 0...GridLogic.GRID_HEIGHT)
+			{
+				var b:Block = grid[x][y];
+				b.node = logic.grid[x][y];
+			}
+		}
+		
+		this.enabled = false;
+		this.syncNodes(false);
 	}
 	
 	private function syncNodes(middleStep:Bool):Void

@@ -1,0 +1,20 @@
+{"frames": {
+
+"blockie_orange.png":
+{
+	"frame": {"x":1,"y":1,"w":492,"h":492},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
+	"sourceSize": {"w":512,"h":512}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "block_orange.png",
+	"format": "RGBA8888",
+	"size": {"w":494,"h":494},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:abddb783b9ec9fc63376ebbd6066f544:223ad96247b90ec5a2c8cada4b0cb2b4:f20beb301c2eb9677d04f89eb509c262$"
+}
+}

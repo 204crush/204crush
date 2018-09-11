@@ -4,6 +4,7 @@ import createjs.tweenjs.Ease;
 import createjs.tweenjs.Tween;
 import haxe.Timer;
 import js.Lib;
+import js.html.ScreenOrientation;
 import particles.ParticleManager;
 import pixi.core.display.Container;
 import pixi.core.math.Point;
@@ -21,6 +22,8 @@ import util.Pool;
 @:expose("GV")
 class GameView extends Container
 {
+	private var score:Score;
+	
 	private var bg:Sprite;
 	private var control:GridControl;
 	private var size:Rectangle;
@@ -40,13 +43,21 @@ class GameView extends Container
 		this.control.x = 640;
 		this.control.y = 220;
 		
+		this.score = new Score();
+		
 		this.addChild(this.bg);
 		this.addChild(this.control);
+		this.addChild(this.score);
+	}
+	
+	public function prepare():Void
+	{
+		this.control.prepare();
 	}
 	
 	public function start():Void
 	{
-		
+		this.control.enabled = true;
 	}
 	
 	public function resize(size:Rectangle):Void
