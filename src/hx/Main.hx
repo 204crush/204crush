@@ -171,6 +171,8 @@ class Main
 		
 		this.start.start.addListener("click", onStartClick);
 		this.start.start.addListener("tap", onStartClick);
+		
+		onStartClick();
 	}
 	
 	private function onStartClick():Void
@@ -178,7 +180,7 @@ class Main
 		Sounds.playEffect(Sounds.TOGGLE);
 		this.start.interactiveChildren = false;
 		this.start.visible = false;
-		ParticleManager.words.hide();
+		this.game.visible = true;
 		Timer.delay(function(){
 			this.game.start();
 		},500);

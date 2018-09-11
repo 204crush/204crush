@@ -1,9 +1,13 @@
 package controls;
 
 import js.Browser;
+import js.html.EventTarget;
 import js.html.KeyboardEvent;
 import logic.GridLogic;
 import pixi.core.display.Container;
+import pixi.core.math.Point;
+import pixi.interaction.InteractionData;
+import pixi.plugins.spine.core.EventData;
 
 /**
  * ...
@@ -11,9 +15,9 @@ import pixi.core.display.Container;
  */
 class GridControl extends Container 
 {
-	public static var SPACING:Int = 2;
-	public static var BLOCK_HEIGHT:Int = 100;
-	public static var BLOCK_WIDTH:Int = 100;
+	public static var SPACING:Int = 0;
+	public static var BLOCK_HEIGHT:Int = 130;
+	public static var BLOCK_WIDTH:Int = 130;
 	
 	private var logic:GridLogic;
 	
@@ -37,20 +41,34 @@ class GridControl extends Container
 	private function initializeControls():Void
 	{
 		this.blockContainer = new Container();
-		
+		this.blocks = [];
+		this.grid = [];
 		for ( x in 0...GridLogic.GRID_WIDTH)
 		{
+			this.grid[x] = [];
 			for ( y in 0...GridLogic.GRID_HEIGHT)
 			{
 				var b:Block = new Block();
 				b.x = x * BLOCK_WIDTH + Math.max(0, (x - 1)) * SPACING + BLOCK_WIDTH / 2;
 				b.y = y * BLOCK_HEIGHT + Math.max(0, (y - 1)) * SPACING + BLOCK_HEIGHT / 2;
-				
+				this.grid[x][y] = b;
+				this.blocks.push(b);
 				this.blockContainer.addChild(b);
 			}
 		}
 		
 		this.addChild(this.blockContainer);
+		
+		this.syncNodes();
+	}
+	
+	private function syncNodes():Void
+	{
+		for ( n in logic.nodes)
+		{
+			var b:Block = grid[n.x][n.y];
+			b.setType(n.value);
+		}
 	}
 	
 	private function keyDown(event:KeyboardEvent):Void
@@ -88,6 +106,8 @@ class GridControl extends Container
 			this.logic.spawnRandom();
 			
 			this.logic.printGrid();
+			this.syncNodes();
 		}
+		
 	}
 }

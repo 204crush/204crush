@@ -127,13 +127,14 @@ Main.prototype = {
 		this.ticker.add($bind(this,this.onTickerTick));
 		this.start.start.addListener("click",$bind(this,this.onStartClick));
 		this.start.start.addListener("tap",$bind(this,this.onStartClick));
+		this.onStartClick();
 	}
 	,onStartClick: function() {
 		var _gthis = this;
 		sounds_Sounds.playEffect(sounds_Sounds.TOGGLE);
 		this.start.interactiveChildren = false;
 		this.start.visible = false;
-		particles_ParticleManager.words.hide();
+		this.game.visible = true;
 		haxe_Timer.delay(function() {
 			_gthis.game.start();
 		},500);
@@ -190,27 +191,44 @@ controls_Block.__name__ = true;
 controls_Block.__super__ = PIXI.Container;
 controls_Block.prototype = $extend(PIXI.Container.prototype,{
 	initializeControls: function() {
-		this.sprite = util_Asset.getImage("block1/block.png",true);
+		this.sprite = util_Asset.getImage("temp.png",true);
 		this.sprite.anchor.x = this.sprite.anchor.y = 0.5;
+		this.sprite.width = this.sprite.height = 120;
 		this.addChild(this.sprite);
+	}
+	,setType: function(value) {
+		if(value == -1) {
+			this.sprite.visible = false;
+		} else {
+			this.sprite.visible = true;
+			this.sprite.tint = [16711680,65280,255,16776960,16711935,65535,0,16777215][value];
+		}
 	}
 	,__class__: controls_Block
 });
 var controls_GameView = $hx_exports["GV"] = function() {
 	PIXI.Container.call(this);
 	this.initializeControls();
-	this.control = new controls_GridControl();
 };
 controls_GameView.__name__ = true;
 controls_GameView.__super__ = PIXI.Container;
 controls_GameView.prototype = $extend(PIXI.Container.prototype,{
-	start: function() {
+	initializeControls: function() {
+		this.bg = util_Asset.getImage("bg.jpg",false);
 		this.control = new controls_GridControl();
+		this.control.x = 640;
+		this.control.y = 220;
+		this.addChild(this.bg);
+		this.addChild(this.control);
 	}
-	,initializeControls: function() {
+	,start: function() {
 	}
 	,resize: function(size) {
 		this.size = size;
+		var s = Math.max(size.width / this.bg.width,size.height / this.bg.height);
+		this.scale.x = this.scale.y = s;
+		this.x = Math.round((size.width - this.bg.width * s) / 2);
+		this.y = Math.round((size.height - this.bg.height * s) / 2);
 	}
 	,__class__: controls_GameView
 });
@@ -227,10 +245,13 @@ controls_GridControl.__super__ = PIXI.Container;
 controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 	initializeControls: function() {
 		this.blockContainer = new PIXI.Container();
+		this.blocks = [];
+		this.grid = [];
 		var _g1 = 0;
 		var _g = logic_GridLogic.GRID_WIDTH;
 		while(_g1 < _g) {
 			var x = _g1++;
+			this.grid[x] = [];
 			var _g3 = 0;
 			var _g2 = logic_GridLogic.GRID_HEIGHT;
 			while(_g3 < _g2) {
@@ -238,10 +259,23 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 				var b = new controls_Block();
 				b.x = x * controls_GridControl.BLOCK_WIDTH + Math.max(0,x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
 				b.y = y * controls_GridControl.BLOCK_HEIGHT + Math.max(0,y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
+				this.grid[x][y] = b;
+				this.blocks.push(b);
 				this.blockContainer.addChild(b);
 			}
 		}
 		this.addChild(this.blockContainer);
+		this.syncNodes();
+	}
+	,syncNodes: function() {
+		var _g = 0;
+		var _g1 = this.logic.nodes;
+		while(_g < _g1.length) {
+			var n = _g1[_g];
+			++_g;
+			var b = this.grid[n.x][n.y];
+			b.setType(n.value);
+		}
 	}
 	,keyDown: function(event) {
 		var direction = null;
@@ -264,6 +298,7 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 			}
 			this.logic.spawnRandom();
 			this.logic.printGrid();
+			this.syncNodes();
 		}
 	}
 	,__class__: controls_GridControl
@@ -1762,15 +1797,15 @@ if(ArrayBuffer.prototype.slice == null) {
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
 Config.ASSETS = ["img/ui.json","img/bg.jpg"];
 Config.VERSION = "204crush 0.1";
-controls_GridControl.SPACING = 2;
-controls_GridControl.BLOCK_HEIGHT = 100;
-controls_GridControl.BLOCK_WIDTH = 100;
+controls_GridControl.SPACING = 0;
+controls_GridControl.BLOCK_HEIGHT = 130;
+controls_GridControl.BLOCK_WIDTH = 130;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
 js_Boot.__toStr = ({ }).toString;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
-logic_GridLogic.GRID_WIDTH = 5;
-logic_GridLogic.GRID_HEIGHT = 5;
+logic_GridLogic.GRID_WIDTH = 6;
+logic_GridLogic.GRID_HEIGHT = 6;
 logic_GridLogic.MAX_VALUE = 4;
 logic_GridLogic.RANDOM_SPAWN_AMOUNT = { min : 1, max : 3};
 sounds_Sounds.BLOB_SUCK = "blob_suck";

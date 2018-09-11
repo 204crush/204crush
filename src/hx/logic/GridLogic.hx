@@ -21,15 +21,15 @@ enum Orientation
  */
 class GridLogic 
 {
-	public static var GRID_WIDTH:Int = 5;
-	public static var GRID_HEIGHT:Int = 5;
+	public static var GRID_WIDTH:Int = 6;
+	public static var GRID_HEIGHT:Int = 6;
 	
 	public static var MAX_VALUE:Int = 4;
 	
 	public static var RANDOM_SPAWN_AMOUNT:Range= {min: 1, max:3};
 	
-	private var grid:Array<Array<Node>>;
-	private var nodes:Array<Node>;
+	public var grid:Array<Array<Node>>;
+	public var nodes:Array<Node>;
 	
 	public function new() 
 	{
