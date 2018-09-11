@@ -77,19 +77,7 @@ class Sounds
 
 		sounds = [
 			{s:BACKGROUND, c:1 },
-			{s:BLOB_WRONG, c:4 },
-			{s:BLOB_SUCK, c:4 },
-			{s:BLOBS_COMBINE, c:4 },
-			{s:BLOCK_BREAK, c:4 },
-			{s:BLOCK_HIT, c:4 },
-			{s:TOGGLE, c:4 },
-			{s:ALU_BROMIDE, c:1 },
-			{s:ALU_OXIDE, c:1 },
-			{s:LITHIUM_BROMIDE, c:1},
-			{s:LITHIUM_OXIDE, c:1 },
-			{s:MAG_BROMIDE, c:1 },
-			{s:MAG_OXIDE, c:1},
-			{s:VICTORY, c:1},
+			
 			
 		];
 		

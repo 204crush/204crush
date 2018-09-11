@@ -4,9 +4,6 @@ import controls.StartView;
 import createjs.soundjs.Sound;
 import createjs.tweenjs.Tween;
 import haxe.Timer;
-import matter.Engine;
-import matter.Runner;
-import matter.World;
 import particles.ParticleManager;
 
 import js.Browser;
@@ -58,10 +55,6 @@ class Main
 	
 	public var game:GameView;
 	
-	public var engine:Engine;
-	public var world:World;
-	private var runner:Runner;
-	
 	private var start:StartView;
 	/**
 	 * Renderer for the game.
@@ -100,6 +93,7 @@ class Main
 	 */
 	private function onAssetsLoaded():Void
 	{
+		Browser.document.getElementById("preload").remove();
 		this.initializeRenderer();
 		this.initializeControls();
 		Browser.window.addEventListener("resize", this.onResize, false);
@@ -116,7 +110,8 @@ class Main
 		this.resizeTimer = Timer.delay(function()
 		{
 			var size:Rectangle = this.getGameSize();
-			
+			this.renderer.resize(size.width, size.height);
+			this.start.resize(size);
 			this.game.resize(size);
 			
 		},
@@ -157,9 +152,6 @@ class Main
 	*/
 	private function initializeControls():Void
 	{
-		this.engine = Engine.create();
-		this.world = engine.world;
-		this.world.gravity.y = 0.4;
 		
 		this.mainContainer = new Container();
 		
@@ -203,8 +195,6 @@ class Main
 	*/
 	private function onTickerTick():Void
 	{
-		Engine.update(engine, 1000 / 60);
-		
 		var delta:Float = ticker.deltaTime;
 		Tween.tick(ticker.elapsedMS,false);
 		for (t in tickListeners) t(delta);

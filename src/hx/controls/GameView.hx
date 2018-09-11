@@ -4,8 +4,6 @@ import createjs.tweenjs.Ease;
 import createjs.tweenjs.Tween;
 import haxe.Timer;
 import js.Lib;
-import matter.Body;
-import matter.Vector;
 import particles.ParticleManager;
 import pixi.core.display.Container;
 import pixi.core.math.Point;
@@ -34,6 +32,7 @@ class GameView extends Container
 	{
 		
 	}
+	
 	private function initializeControls():Void
 	{
 		

@@ -73,6 +73,7 @@ Main.main = function() {
 };
 Main.prototype = {
 	onAssetsLoaded: function() {
+		window.document.getElementById("preload").remove();
 		this.initializeRenderer();
 		this.initializeControls();
 		window.addEventListener("resize",$bind(this,this.onResize),false);
@@ -85,6 +86,8 @@ Main.prototype = {
 		}
 		this.resizeTimer = haxe_Timer.delay(function() {
 			var size = _gthis.getGameSize();
+			_gthis.renderer.resize(size.width,size.height);
+			_gthis.start.resize(size);
 			_gthis.game.resize(size);
 		},50);
 	}
@@ -104,9 +107,6 @@ Main.prototype = {
 		window.document.getElementById("game").appendChild(this.renderer.view);
 	}
 	,initializeControls: function() {
-		this.engine = Matter.Engine.create();
-		this.world = this.engine.world;
-		this.world.gravity.y = 0.4;
 		this.mainContainer = new PIXI.Container();
 		this.game = new controls_GameView();
 		this.game.visible = false;
@@ -134,7 +134,6 @@ Main.prototype = {
 		this.start.interactiveChildren = true;
 	}
 	,onTickerTick: function() {
-		Matter.Engine.update(this.engine,16.666666666666668);
 		var delta = this.ticker.deltaTime;
 		createjs.Tween.tick(this.ticker.elapsedMS,false);
 		var _g = 0;
@@ -201,13 +200,18 @@ controls_StartView.prototype = $extend(PIXI.Container.prototype,{
 	initializeControls: function() {
 		this.logo = util_Asset.getImage("logo.png",true);
 		this.start = util_Asset.getImage("start_button.png",true);
+		this.bg = util_Asset.getImage("bg.jpg",false);
 		this.start.y = 720;
 		this.start.x = 110;
 		this.start.interactive = true;
-		this.addChild(this.logo);
+		this.addChild(this.bg);
 		this.logo.addChild(this.start);
 	}
 	,resize: function(size) {
+		var s = Math.max(size.width / this.bg.width,size.height / this.bg.height);
+		this.scale.x = this.scale.y = s;
+		this.x = Math.round((size.width - this.bg.width * s) / 2);
+		this.y = Math.round((size.height - this.bg.height * s) / 2);
 	}
 	,__class__: controls_StartView
 });
@@ -876,7 +880,7 @@ sounds_Sounds.initSounds = function() {
 	sounds_Sounds.loaded = [];
 	sounds_Sounds.soundMap = new haxe_ds_StringMap();
 	var base = "snd/";
-	sounds_Sounds.sounds = [{ s : sounds_Sounds.BACKGROUND, c : 1},{ s : sounds_Sounds.BLOB_WRONG, c : 4},{ s : sounds_Sounds.BLOB_SUCK, c : 4},{ s : sounds_Sounds.BLOBS_COMBINE, c : 4},{ s : sounds_Sounds.BLOCK_BREAK, c : 4},{ s : sounds_Sounds.BLOCK_HIT, c : 4},{ s : sounds_Sounds.TOGGLE, c : 4},{ s : sounds_Sounds.ALU_BROMIDE, c : 1},{ s : sounds_Sounds.ALU_OXIDE, c : 1},{ s : sounds_Sounds.LITHIUM_BROMIDE, c : 1},{ s : sounds_Sounds.LITHIUM_OXIDE, c : 1},{ s : sounds_Sounds.MAG_BROMIDE, c : 1},{ s : sounds_Sounds.MAG_OXIDE, c : 1},{ s : sounds_Sounds.VICTORY, c : 1}];
+	sounds_Sounds.sounds = [{ s : sounds_Sounds.BACKGROUND, c : 1}];
 	var _g = 0;
 	var _g1 = sounds_Sounds.sounds;
 	while(_g < _g1.length) {
@@ -1396,7 +1400,7 @@ if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_html_compat_ArrayBuffer.sliceImpl;
 }
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
-Config.ASSETS = ["img/ui.json"];
+Config.ASSETS = ["img/ui.json","img/bg.jpg"];
 Config.VERSION = "204crush 0.1";
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
