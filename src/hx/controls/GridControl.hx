@@ -157,6 +157,7 @@ class GridControl extends Container
 	{
 		if (direction != null && enabled)
 		{
+			enabled = true;
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
 			this.syncNodes(false);
