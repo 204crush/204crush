@@ -3,6 +3,7 @@ package controls;
 import createjs.tweenjs.Ease;
 import createjs.tweenjs.Tween;
 import js.html.SimpleGestureEvent;
+import logic.GridLogic;
 import logic.GridLogic.Node;
 import pixi.core.display.Container;
 import pixi.core.sprites.Sprite;
@@ -43,9 +44,19 @@ class Block extends Container
 		this.sprite.x = -6;
 		this.sprite.y = -6;
 		this.scale.x = this.scale.y = 0;
+		
 		//TEMP SCALE
-		sprite.width = sprite.height = 120;
+		sprite.width = sprite.height = GridControl.BLOCK_HEIGHT-10*6/GridLogic.GRID_HEIGHT;
 		this.addChild(this.sprite);
+		
+		this.interactive = true;
+		this.addListener("click", onAnnoyClick);
+	}
+	private function onAnnoyClick():Void
+	{
+		var os:Float = this.sprite.scale.x;
+	//	Tween.get(this.sprite.scale).to({x: os * 1.25}, 390, Ease.quadInOut).to({x:os}, 40, Ease.quadInOut);
+	//	Tween.get(this.sprite.scale).to({y: os * 1.25}, 450, Ease.quadInOut).to({y:os}, 80, Ease.quadInOut);
 	}
 	
 	public function sync(middleStep:Bool)
