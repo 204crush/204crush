@@ -81,6 +81,15 @@ class GridControl extends Container
 	
 	public function prepare():Void
 	{
+		BLOCK_HEIGHT = Math.floor(6/GridLogic.GRID_HEIGHT * 130);
+		BLOCK_WIDTH = Math.floor(6/GridLogic.GRID_WIDTH * 130);
+		
+		this.logic = new GridLogic();
+		this.logic.spawnRandom();
+		this.logic.spawnRandom();
+		this.logic.spawnRandom();
+		this.logic.printGrid();
+		
 		this.blockContainer.removeChildren();
 		this.blocks = [];
 		this.grid = [];
@@ -100,14 +109,7 @@ class GridControl extends Container
 		}
 		
 		
-		this.logic = new GridLogic();
-		this.logic.spawnRandom();
-		this.logic.spawnRandom();
-		this.logic.spawnRandom();
-		this.logic.printGrid();
 		
-		BLOCK_HEIGHT = Math.floor(6/GridLogic.GRID_HEIGHT * 130);
-		BLOCK_WIDTH = Math.floor(6/GridLogic.GRID_WIDTH * 130);
 		
 		for ( x in 0...GridLogic.GRID_WIDTH)
 		{
