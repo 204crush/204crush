@@ -280,6 +280,7 @@ class GridLogic
 	
 	public function applyLineClear(x:Int, y:Int, orientation:Orientation):Void
 	{
+		trace("Clear line: " + x  +", " +y + ", " +orientation); 
 		if (orientation == Orientation.horizontal)
 		{
 			for (x in 0...GRID_WIDTH)

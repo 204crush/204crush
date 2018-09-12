@@ -118,12 +118,9 @@ class GridControl extends Container
 		this.syncNodes(false);
 	}
 	
-	private function syncNodes(middleStep:Bool):Void
+	private function handleSpecial():Bool
 	{
-		for ( b in blocks)
-		{
-			b.sync(middleStep);
-		}
+		var found:Bool = false;
 		if (lastLines != null)
 		{
 			for (line in lastLines)
@@ -135,11 +132,13 @@ class GridControl extends Container
 					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.vertical);
 					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.horizontal);
 					trace("CLEAR 5");
+					found = true;
 				}
-				else if (line.nodes.length == 3)
+				else if (line.nodes.length == 4)
 				{
 					logic.applyLineClear( line.nodes[0].x, line.nodes[0].y, line.orientation);
 					trace("CLEAR 4");
+					found = true;
 				}
 				
 				//Check if L or X is formed.
@@ -149,6 +148,17 @@ class GridControl extends Container
 				}
 			}
 		}
+		return found;
+	}
+	
+	private function syncNodes(middleStep:Bool):Void
+	{
+		
+		for ( b in blocks)
+		{
+			b.sync(middleStep);
+		}
+
 	}
 	
 	private function touchDown(eventData:TouchEvent) 
@@ -254,14 +264,23 @@ class GridControl extends Container
 				PraiseManager.showMessage("Blooooooddd... " + chains + "X!",400);
 
 			this.logic.clearRemoved(lastRemoved);
-			this.logic.swipe(lastSwipeDirection);
-			this.syncNodes(true);
-			var removed:Int = lastRemoved.length;
-			lastLines = [];
-			lastRemoved = this.logic.remove(lastLines);
-			if (lastRemoved.length == 0) enabled = true;
-			Timer.delay(nextStep, 600);
-			this.emit(ON_BLOCK_REMOVE, removed*15);
+			var specialFound:Bool = this.handleSpecial();
+			if (specialFound)
+			{
+				lastLines = [];
+				Timer.delay(nextStep, 300);
+			}
+			else
+			{
+				this.logic.swipe(lastSwipeDirection);
+				this.syncNodes(true);
+				var removed:Int = lastRemoved.length;
+				lastLines = [];
+				lastRemoved = this.logic.remove(lastLines);
+				if (lastRemoved.length == 0) enabled = true;
+				Timer.delay(nextStep, 600);
+				this.emit(ON_BLOCK_REMOVE, removed * 15);
+			}
 		}
 		else
 		{
