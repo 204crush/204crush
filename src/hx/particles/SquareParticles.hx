@@ -3,6 +3,7 @@ import createjs.tweenjs.Ease;
 import createjs.tweenjs.Tween;
 import pixi.core.Pixi;
 import pixi.core.display.Container;
+import pixi.core.math.Point;
 import pixi.core.math.shapes.Rectangle;
 import pixi.core.sprites.Sprite;
 
@@ -13,9 +14,9 @@ import util.Pool;
  * ...
  * @author 
  */
-class BgStars extends BaseParticleEffect
+class SquareParticles extends BaseParticleEffect
 {
-	private var pool:Pool<BgStarParticle>;
+	private var pool:Pool<SquareParticle>;
 	
 	private var area:Rectangle = new Rectangle(0, 0, 2048, 2048);
 	
@@ -23,52 +24,55 @@ class BgStars extends BaseParticleEffect
 	{
 		super();
 		var c:Int = 0;
-		this.pool = new Pool<BgStarParticle>(50, function():BgStarParticle{
-			var p:BgStarParticle = {
-				sprite:Asset.getImage("UI_little circle.png", true),
+		this.pool = new Pool<SquareParticle>(450, function():SquareParticle{
+			var p:SquareParticle = {
+				sprite:Asset.getImage("star.png", true),
 				lifetime:0,
 				maxlife:0,
 				sx:0,
 				sy:0
 			};
 			this.addChild(p.sprite);
-			p.sprite.scale.x = p.sprite.scale.y = 0.1;
+			p.sprite.scale.x = p.sprite.scale.y = 0.5;
 			p.sprite.anchor.x = p.sprite.anchor.y = 0.5+Math.random();
 			p.sprite.blendMode = Pixi.BLEND_MODES.ADD;
-			randomizeParticle(p);
+			p.sprite.visible = false;
+			randomizeParticle(p,0x0);
 			return p;
 		});
-		
-		Main.instance.tickListeners.push(update);
 	}
 	
-	private function randomizeParticle(p:BgStarParticle):Void
+	public function spawn(point:Point,color:Int):Void
+	{
+		area.x = point.x - 65/2;
+		area.y = point.y - 65/2;
+		area.height = 130/2;
+		area.width = 130/2;
+		
+		
+		for (i in 0...50)
+		{
+			var p:SquareParticle = pool.getNext();
+			
+			randomizeParticle(p,color);
+		}
+	}
+	
+	private function randomizeParticle(p:SquareParticle,color:Int):Void
 	{
 		p.sprite.scale.x = p.sprite.scale.y = Math.random() * 0.06 + 0.025;
 		p.lifetime = (Math.random() + 0.5)*80+30;
 		p.maxlife = p.lifetime;
 		p.sprite.x = Math.random() * area.width + area.x;
 		p.sprite.y = Math.random() * area.height + area.y;
+		p.sprite.visible = true;
 		p.sx = (Math.random() - 0.5)*2;
 		p.sy = (Math.random() - 1.5)*2;
-		
-	}
-	
-	override public function update(d:Float):Void 
-	{
-		super.update(d);
-		for (p in pool.all)
-		{
-			p.lifetime-= d;
-			if (p.lifetime < 0)
-				randomizeParticle(p);
-			p.sprite.x += p.sx*d;
-			p.sprite.y += p.sy*d;
-			p.sprite.rotation = (p.lifetime+p.maxlife)*p.sprite.scale.x*0.1;
-			//Update particle
-			var phase:Float = (p.maxlife-p.lifetime) / p.maxlife;
-			p.sprite.alpha = (phase < 0.34 ? phase / 0.34 : 1-(phase - 0.34) / (1 - 0.34))*0.5;
-		}
+		p.sprite.alpha = 1;
+		p.sprite.rotation = 0;
+		p.sprite.tint = color;
+		Tween.get(p.sprite).to({alpha:0, rotation:Math.random() *Math.PI*5}, 600 + Math.floor(Math.random() * 400), Ease.quadOut);
+		Tween.get(p.sprite.scale).to({x:0.5,y:0.5}, 600+Math.floor(Math.random()*400),Ease.quadOut);
 	}
 	
 	override public function clear():Void 
@@ -78,7 +82,7 @@ class BgStars extends BaseParticleEffect
 
 }
 
-typedef BgStarParticle = 
+typedef SquareParticle = 
 {
 	public var sprite:Sprite;
 	public var lifetime:Float;

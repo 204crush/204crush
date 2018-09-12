@@ -27,6 +27,7 @@ class GameView extends Container
 	private var bg:Sprite;
 	private var control:GridControl;
 	private var size:Rectangle;
+	private var _score:Int = 0;
 	
 	public function new() 
 	{
@@ -42,8 +43,11 @@ class GameView extends Container
 		this.control = new GridControl();
 		this.control.x = 640;
 		this.control.y = 220;
+		this.control.addListener(GridControl.ON_BLOCK_REMOVE, onBlockRemove);
 		
 		this.score = new Score();
+		this.score.x = 640;
+		this.score.y = 110;
 		
 		this.addChild(this.bg);
 		this.addChild(this.control);
@@ -52,12 +56,20 @@ class GameView extends Container
 	
 	public function prepare():Void
 	{
+		_score = 0;
+		this.score.prepare();
 		this.control.prepare();
 	}
 	
 	public function start():Void
 	{
 		this.control.enabled = true;
+	}
+	
+	private function onBlockRemove(count:Int):Void
+	{
+		_score += count;
+		this.score.setScore(_score);
 	}
 	
 	public function resize(size:Rectangle):Void

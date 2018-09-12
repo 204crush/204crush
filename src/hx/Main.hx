@@ -155,6 +155,7 @@ class Main
 	*/
 	private function initializeControls():Void
 	{
+		ParticleManager.init();
 		
 		this.mainContainer = new Container();
 		
@@ -164,7 +165,7 @@ class Main
 		
 		this.mainContainer.addChild(this.start);
 		this.mainContainer.addChild(this.game);
-		
+		this.mainContainer.addChild(ParticleManager.particles);
 		//ParticleManager.init();
 		
 		this.onResize(null);

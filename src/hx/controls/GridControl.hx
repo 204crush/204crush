@@ -20,6 +20,8 @@ import util.Asset;
  */
 class GridControl extends Container 
 {
+	public static var ON_BLOCK_REMOVE:String = "onBlockRemove";
+	
 	public static var SPACING:Int = 0;
 	public static var BLOCK_HEIGHT:Int = 130;
 	public static var BLOCK_WIDTH:Int = 130;
@@ -217,13 +219,14 @@ class GridControl extends Container
 			this.logic.clearRemoved(lastRemoved);
 			this.logic.swipe(lastSwipeDirection);
 			this.syncNodes(true);
+			var removed:Int = lastRemoved.length;
 			lastRemoved = this.logic.remove();
 			if (lastRemoved.length == 0) enabled = true;
 			Timer.delay(nextStep, 600);
+			this.emit(ON_BLOCK_REMOVE, removed*15);
 		}
 		else
 		{
-			
 			this.logic.spawnRandom();
 			this.syncNodes(false);
 			this.enabled = true;

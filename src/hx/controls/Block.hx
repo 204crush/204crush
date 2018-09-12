@@ -7,7 +7,10 @@ import js.Lib;
 import js.html.SimpleGestureEvent;
 import logic.GridLogic;
 import logic.GridLogic.Node;
+import particles.ParticleManager;
+import pixi.core.Pixi;
 import pixi.core.display.Container;
+import pixi.core.math.Point;
 import pixi.core.sprites.Sprite;
 import pixi.core.textures.Texture;
 import pixi.extras.AnimatedSprite;
@@ -31,7 +34,9 @@ class Block extends Container
 	
 	public var node:Node;
 	private var sprite:AnimatedSprite;
+	private var bright:Sprite;
 
+	
 	private var active:Bool = false;
 	
 	private var textures:Array<Texture>;
@@ -80,6 +85,9 @@ class Block extends Container
 			//Asset.getTexture("block_blue/blockie_blue.png", true),
 		];
 		
+		this.bright = Asset.getImage("block_bright.png", true);
+		
+		
 		this.sprite = new AnimatedSprite( moveLeft[0]);
 		this.sprite.loop = true;
 		this.sprite.gotoAndPlay(0);
@@ -89,10 +97,18 @@ class Block extends Container
 		this.sprite.y = -6;
 		this.scale.x = this.scale.y = 0;
 		
-		//TEMP SCALE
-		sprite.width = sprite.height = GridControl.BLOCK_HEIGHT-10*6/GridLogic.GRID_HEIGHT;
-		this.addChild(this.sprite);
+		this.bright.anchor = sprite.anchor;
+		this.bright.position = sprite.position;
+		this.bright.alpha = 0;
 		
+		//TEMP SCALE
+		sprite.width = sprite.height = GridControl.BLOCK_HEIGHT - 10 * 6 / GridLogic.GRID_HEIGHT;
+		bright.width = bright.height = sprite.width;
+		this.bright.blendMode = Pixi.BLEND_MODES.ADD;
+		this.bright.alpha = 0.0;
+		
+		this.addChild(this.sprite);
+		this.addChild(this.bright);
 		this.interactive = true;
 		this.addListener("click", onAnnoyClick);
 	}
@@ -135,9 +151,13 @@ class Block extends Container
 		if (active && node.value == -1)
 		{
 			//Destroyed. Sleep.
+			ParticleManager.squares.spawn(ParticleManager.squares.toLocal(new Point(),this),[0x0000ff, 0x00ff00, 0xffff00, 0xffffff][prevValue]);
 			this.active = false;
 			sprite.textures = death[prevValue];
 			this.sprite.play();
+			this.bright.visible = true;
+			this.bright.alpha = 0.0;
+			Tween.get(this.bright).to({alpha:0.5}, 150).to({alpha:0}, 50);
 			Tween.removeTweens(this.scale);
 			Tween.get(this.scale).wait(150,true).to({x:0, y:0}, 250, Ease.quadIn);
 		}

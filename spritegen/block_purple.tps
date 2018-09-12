@@ -34,7 +34,7 @@
         <key>dataFormat</key>
         <string>pixijs4</string>
         <key>textureFileName</key>
-        <filename>../bin/img/ui.png</filename>
+        <filename>../bin/img/block_purple.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -132,7 +132,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../bin/img/ui.json</filename>
+                <filename>../bin/img/block_purple.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -181,49 +181,32 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../assets/images/ui/logo.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/blockie_purple.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/death/blockie_purple_death01.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/death/blockie_purple_death02.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/default/blockie_purple.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/down/blockie_purple_moving_down.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/idle/blockie_purple_idle01.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/idle/blockie_purple_idle02.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/left/blockie_purple_moving_left.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/right/blockie_purple_moving_right.png</key>
+            <key type="filename">../assets/images/blocks/block_purple/up/blockie_purple_moving_up.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0,0</point_f>
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>116,82,232,163</rect>
+                <rect>128,128,256,256</rect>
                 <key>scale9Paddings</key>
-                <rect>116,82,232,163</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">../assets/images/ui/start_button.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0,0</point_f>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>122,66,244,132</rect>
-                <key>scale9Paddings</key>
-                <rect>122,66,244,132</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">../assets/images/ui/temp.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0,0</point_f>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>21,18,41,37</rect>
-                <key>scale9Paddings</key>
-                <rect>21,18,41,37</rect>
+                <rect>128,128,256,256</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
         </map>
         <key>fileList</key>
         <array>
-            <filename>../assets/images/ui</filename>
+            <filename>../assets/images/blocks/block_purple</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
