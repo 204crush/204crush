@@ -201,22 +201,32 @@ class Main
 	
 	private function onStartClick_Small():Void
 	{
+		Sounds.playEffect(Sounds.TAP);
 		GridLogic.GRID_HEIGHT = 6;
 		GridLogic.GRID_WIDTH = 6;
+		GridLogic.RANDOM_SPAWN_AMOUNT.min = 1;
+		GridLogic.RANDOM_SPAWN_AMOUNT.max = 3;
+		
 		onStartClick();
 	}
 	
 	private function onStartClick_Medium():Void
 	{
+		Sounds.playEffect(Sounds.TAP);
 		GridLogic.GRID_HEIGHT = 7;
 		GridLogic.GRID_WIDTH = 7;
+		GridLogic.RANDOM_SPAWN_AMOUNT.min = 2;
+		GridLogic.RANDOM_SPAWN_AMOUNT.max = 5;
 		onStartClick();
 	}
 	
 	private function onStartClick_Big():Void
 	{
+		Sounds.playEffect(Sounds.TAP);
 		GridLogic.GRID_HEIGHT = 8;
 		GridLogic.GRID_WIDTH = 8;
+		GridLogic.RANDOM_SPAWN_AMOUNT.min = 5;
+		GridLogic.RANDOM_SPAWN_AMOUNT.max = 10;
 		onStartClick();
 	}
 	

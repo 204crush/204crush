@@ -11,6 +11,7 @@ import pixi.core.display.Container;
 import pixi.core.math.Point;
 import pixi.interaction.InteractionData;
 import pixi.plugins.spine.core.EventData;
+import sounds.Sounds;
 import util.MathUtil;
 import util.Asset;
 
@@ -108,9 +109,6 @@ class GridControl extends Container
 			}
 		}
 		
-		
-		
-		
 		for ( x in 0...GridLogic.GRID_WIDTH)
 		{
 			for ( y in 0...GridLogic.GRID_HEIGHT)
@@ -135,11 +133,15 @@ class GridControl extends Container
 				if (line.isSquare)
 				{
 					trace("IS SQUARE");
+					Sounds.playEffect(Sounds.MATCH_SQUARE);
+					Sounds.playEffect(Sounds.LINE_CLEAR, 0, 1, 250);
 					var cleared:Array<Node> = logic.applySquareClear(line.value);
 					lineAnimator.animateNodes(cleared, line);
 				}
 				else if (line.nodes.length == 5)
 				{
+					Sounds.playEffect(Sounds.MATCH_5);
+					Sounds.playEffect(Sounds.LINE_CLEAR, 0, 1, 250);
 					//Calculate center point.
 					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.vertical);
 					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.horizontal);
@@ -150,6 +152,8 @@ class GridControl extends Container
 				}
 				else if (line.nodes.length == 4)
 				{
+					Sounds.playEffect(Sounds.MATCH_4);
+					Sounds.playEffect(Sounds.LINE_CLEAR, 0, 1, 250);
 					logic.applyLineClear( line.nodes[0].x, line.nodes[0].y, line.orientation);
 					trace("CLEAR 4");
 					found = true;
@@ -157,6 +161,10 @@ class GridControl extends Container
 						lineAnimator.animateHorizontal(line.nodes[0], line);
 					else
 						lineAnimator.animateVertical(line.nodes[0], line);
+				}
+				else
+				{
+					Sounds.playEffect(Sounds.MATCH_3);
 				}
 				
 				//Check if L or X is formed.
@@ -244,6 +252,7 @@ class GridControl extends Container
 	{
 		if (direction != null && enabled )
 		{
+			Sounds.playEffect(Sounds.SWOOSH);
 			chains = 0;
 			enabled = false;
 			this.lastSwipeDirection = direction;

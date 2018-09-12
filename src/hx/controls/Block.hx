@@ -152,7 +152,7 @@ class Block extends Container
 			Tween.get(this.bright).wait(200,true).to({alpha:0.5}, 150).to({alpha:0}, 50);
 			Tween.removeTweens(this.scale);
 			Tween.get(this.scale).wait(200,true).call(function(){
-				ParticleManager.squares.spawn(ParticleManager.squares.toLocal(new Point(),this),[0x0000ff, 0x00ff00, 0xffff00, 0xffffff][prevValue]);
+				ParticleManager.squares.spawn(ParticleManager.squares.toLocal(new Point(),this),[0x0000ff, 0x00ff00, 0xffff00, 0x9e7cca][prevValue]);
 			}).to({x:0, y:0}, 250, Ease.quadIn);
 		}
 		else if (!active && node.value >= 0)
