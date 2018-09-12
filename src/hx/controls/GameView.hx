@@ -112,8 +112,9 @@ class GameView extends Container
 	{
 		this.size = size;
 		var tr:Rectangle = this.getTargetRect();
-		this.width = tr.width;
-		this.height = tr.height;
+		//this.width = tr.width;
+		//this.height = tr.height;
+		this.scale.x = this.scale.y = Math.min( tr.width / 2048, tr.height / 2048);
 		this.x = tr.x;
 		this.y = tr.y;
 		
