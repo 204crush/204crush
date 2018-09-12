@@ -70,6 +70,18 @@ class GridControl extends Container
 	private function initializeControls():Void
 	{
 		this.blockContainer = new Container();
+		
+		this.addChild(this.blockContainer);
+		
+		this.lineAnimator = new LineAnimator();
+		this.addChild(this.lineAnimator);
+		
+		enabled = true;
+	}
+	
+	public function prepare():Void
+	{
+		this.blockContainer.removeChildren();
 		this.blocks = [];
 		this.grid = [];
 		for ( x in 0...GridLogic.GRID_WIDTH)
@@ -87,16 +99,7 @@ class GridControl extends Container
 			}
 		}
 		
-		this.addChild(this.blockContainer);
 		
-		this.lineAnimator = new LineAnimator();
-		this.addChild(this.lineAnimator);
-		
-		enabled = true;
-	}
-	
-	public function prepare():Void
-	{
 		this.logic = new GridLogic();
 		this.logic.spawnRandom();
 		this.logic.spawnRandom();
