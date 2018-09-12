@@ -29,11 +29,11 @@ class PraiseManager extends Container
 	{
 		var ts:TextStyleObject = {};
 		ts.dropShadow = true;
-		ts.dropShadowColor = "rgba(0,0,0,0.3)";
+		ts.dropShadowColor = "rgba(0,0,0,0.7)";
 		ts.dropShadowBlur = 3;
 		//ts.fontStyle = "pigment_demoregular";
 		ts.fontSize = 90;	
-		ts.fill = 0xffffff;
+		ts.fill = 0xFF1e00;
 		texts = [];
 		for (i in 0...6)
 		{
@@ -57,7 +57,7 @@ class PraiseManager extends Container
 		var text:Text = texts[current];
 		
 		text.text = message;
-		
+		text.scale.x = text.scale.y = 1;
 		text.pivot.x = text.width / 2;
 		text.pivot.y = text.height / 2;
 		text.visible = true;
