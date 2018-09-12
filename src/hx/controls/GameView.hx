@@ -32,7 +32,6 @@ class GameView extends Container
 	private var control:GridControl;
 	private var size:Rectangle;
 	private var _score:Int = 0;
-	private var lineAnimator:LineAnimator;
 	
 	public function new() 
 	{
@@ -57,15 +56,12 @@ class GameView extends Container
 		
 		this.praises = new PraiseManager();
 		this.praises.x = control.x + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) / 2);
-		this.praises.y = control.y + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) );
-		
-		this.lineAnimator = new LineAnimator();
+		this.praises.y = control.y + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH )/2 );
 		
 		this.addChild(this.bg);
 		this.addChild(this.control);
 		this.addChild(this.score);
 		this.addChild(this.praises);
-		this.addChild(this.lineAnimator);
 	}
 	
 	private function onGameEnd():Void

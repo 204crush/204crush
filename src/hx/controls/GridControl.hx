@@ -42,7 +42,7 @@ class GridControl extends Container
 	private var swipeStop:Point = new Point(0.0, 0.0);
 	private var swipeDirection:Point = new Point(0.0, 0.0);
 	
-	
+	private var lineAnimator:LineAnimator;
 	
 	public var enabled:Bool = false;
 	
@@ -64,7 +64,6 @@ class GridControl extends Container
 		Browser.window.document.addEventListener("touchstart", touchDown);
 		Browser.window.document.addEventListener("touchmove", touchUpdate);
 		Browser.window.document.addEventListener("touchend", touchUp);
-		
 		
 	}
 	
@@ -90,6 +89,8 @@ class GridControl extends Container
 		
 		this.addChild(this.blockContainer);
 		
+		this.lineAnimator = new LineAnimator();
+		this.addChild(this.lineAnimator);
 		
 		enabled = true;
 	}
@@ -126,19 +127,31 @@ class GridControl extends Container
 			for (line in lastLines)
 			{
 				//Simple cases
-				if (line.nodes.length == 5)
+				if (line.isSquare)
+				{
+					trace("IS SQUARE");
+					var cleared:Array<Node> = logic.applySquareClear(line.value);
+					lineAnimator.animateNodes(cleared, line);
+				}
+				else if (line.nodes.length == 5)
 				{
 					//Calculate center point.
 					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.vertical);
 					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.horizontal);
 					trace("CLEAR 5");
 					found = true;
+					lineAnimator.animateHorizontal(line.nodes[2], line);
+					lineAnimator.animateVertical(line.nodes[2], line);
 				}
 				else if (line.nodes.length == 4)
 				{
 					logic.applyLineClear( line.nodes[0].x, line.nodes[0].y, line.orientation);
 					trace("CLEAR 4");
 					found = true;
+					if(line.orientation == Orientation.horizontal)
+						lineAnimator.animateHorizontal(line.nodes[0], line);
+					else
+						lineAnimator.animateVertical(line.nodes[0], line);
 				}
 				
 				//Check if L or X is formed.
@@ -261,7 +274,7 @@ class GridControl extends Container
 		{
 			chains++;
 			if(chains > 1)
-				PraiseManager.showMessage("Blooooooddd... " + chains + "X!",400);
+				PraiseManager.showMessage("Chained " + chains + "X!",400);
 
 			this.logic.clearRemoved(lastRemoved);
 			var specialFound:Bool = this.handleSpecial();

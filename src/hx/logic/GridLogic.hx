@@ -254,8 +254,11 @@ class GridLogic
 		for (n in nodes)
 		{
 			var match:Array<Node> = testSquareMatch(n);
-			if (match != null)
+			if (match != null && match.length >0)
 			{
+				trace("-is square logic");
+				if(outLines != null)
+					outLines.push({isSquare:true, value:n.value, nodes:match, orientation:null});
 				for (rn in match)
 				{
 					if (removed.indexOf(rn) == -1) removed.push(rn);
@@ -276,6 +279,21 @@ class GridLogic
 		if (removed.length > 0)
 			trace("REMVOED: " + removed.length);
 		return removed;
+	}
+	
+	public function applySquareClear(value:Int):Array<Node>
+	{
+		var toClear:Array<Node> = [];
+		for (n in nodes)
+		{
+			if (n.value == value && value > 0)
+			{
+				n.value = -1;
+				toClear.push(n);
+			}
+		}
+		trace("SQUARE CLEARS: " + toClear.length);
+		return toClear;
 	}
 	
 	public function applyLineClear(x:Int, y:Int, orientation:Orientation):Void
@@ -338,12 +356,12 @@ class GridLogic
 			else
 			{
 				if (current.length >= 3)
-					found.push( { orientation: Orientation.horizontal, nodes: current});
+					found.push( {isSquare: false,  value:current[0].value, orientation: Orientation.horizontal, nodes: current});
 				current = [cmp];
 			}
 		}
 		if (current.length >= 3)
-			found.push( { orientation: Orientation.horizontal, nodes: current});
+			found.push( {isSquare: false,  value:current[0].value,orientation: Orientation.horizontal, nodes: current});
 	}
 	
 	private function sweepTestVertical(found:Array<Line>, x:Int):Void
@@ -359,12 +377,12 @@ class GridLogic
 			else
 			{
 				if (current.length >= 3)
-					found.push( { orientation: Orientation.vertical, nodes: current});
+					found.push( {isSquare: false, value:current[0].value, orientation: Orientation.vertical, nodes: current});
 				current = [cmp];
 			}
 		}
 		if (current.length >= 3)
-			found.push( { orientation: Orientation.vertical, nodes: current});
+			found.push( {isSquare: false, value:current[0].value, orientation: Orientation.vertical, nodes: current});
 	}
 	
 	/**
@@ -406,8 +424,10 @@ class GridLogic
 }
 
 typedef Line = {
+	public var value:Int;
 	public var nodes:Array<Node>;
 	public var orientation:Orientation;
+	public var isSquare:Bool;
 }
 
 
