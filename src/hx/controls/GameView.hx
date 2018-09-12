@@ -23,6 +23,8 @@ import util.Pool;
 @:expose("GV")
 class GameView extends Container
 {
+	public static var GAME_ENDED:String = "onGameEnded";
+	
 	private var score:Score;
 	private var praises:PraiseManager;
 	
@@ -30,6 +32,7 @@ class GameView extends Container
 	private var control:GridControl;
 	private var size:Rectangle;
 	private var _score:Int = 0;
+	private var lineAnimator:LineAnimator;
 	
 	public function new() 
 	{
@@ -45,6 +48,7 @@ class GameView extends Container
 		this.control = new GridControl();
 		this.control.x = 640;
 		this.control.y = 220;
+		this.control.onGameEnd = onGameEnd;
 		this.control.addListener(GridControl.ON_BLOCK_REMOVE, onBlockRemove);
 		
 		this.score = new Score();
@@ -55,10 +59,18 @@ class GameView extends Container
 		this.praises.x = control.x + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) / 2);
 		this.praises.y = control.y + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) );
 		
+		this.lineAnimator = new LineAnimator();
+		
 		this.addChild(this.bg);
 		this.addChild(this.control);
 		this.addChild(this.score);
 		this.addChild(this.praises);
+		this.addChild(this.lineAnimator);
+	}
+	
+	private function onGameEnd():Void
+	{
+		this.emit(GAME_ENDED);
 	}
 	
 	public function prepare():Void

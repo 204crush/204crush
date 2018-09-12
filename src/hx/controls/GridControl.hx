@@ -27,6 +27,8 @@ class GridControl extends Container
 	public static var BLOCK_WIDTH:Int = 130;
 	public static var DEAD_ZONE:Int = 50;
 	
+	public var onGameEnd:Void->Void;
+	
 	private var logic:GridLogic;
 	
 	private var grid:Array<Array<Block>>;
@@ -39,7 +41,9 @@ class GridControl extends Container
 	private var swipeStart:Point = new Point(0.0, 0.0);
 	private var swipeStop:Point = new Point(0.0, 0.0);
 	private var swipeDirection:Point = new Point(0.0, 0.0);
-
+	
+	
+	
 	public var enabled:Bool = false;
 	
 	private var lastRemoved:Array<Node>;
@@ -132,7 +136,7 @@ class GridControl extends Container
 					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.horizontal);
 					trace("CLEAR 5");
 				}
-				else if (line.nodes.length == 4)
+				else if (line.nodes.length == 3)
 				{
 					logic.applyLineClear( line.nodes[0].x, line.nodes[0].y, line.orientation);
 					trace("CLEAR 4");
@@ -267,7 +271,9 @@ class GridControl extends Container
 			
 			if (this.logic.isFinished())
 			{
+				enabled = false;
 				PraiseManager.showMessage("GAME OVER :(", 500);
+				Timer.delay(onGameEnd, 2000);
 			}
 		}
 	}
