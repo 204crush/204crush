@@ -39,7 +39,6 @@ class Block extends Container
 	
 	private var active:Bool = false;
 	
-	private var textures:Array<Texture>;
 	
 	private var prevValue:Int;
 	
@@ -77,13 +76,6 @@ class Block extends Container
 			}
 		}
 		
-		textures = [
-			Asset.getTexture("blockie_blue.png", true),
-			Asset.getTexture("blockie_green.png", true),
-			Asset.getTexture("blockie_orange.png", true),
-			Asset.getTexture("blockie_purple.png", true),
-			//Asset.getTexture("block_blue/blockie_blue.png", true),
-		];
 		
 		this.bright = Asset.getImage("block_bright.png", true);
 		
