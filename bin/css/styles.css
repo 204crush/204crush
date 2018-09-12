@@ -5,7 +5,10 @@ body, div
 	overflow:hidden;
 }
 
-
+html
+{
+	overflow:hidden;
+}
 
 body
 {

@@ -112,15 +112,13 @@ class GridLogic
 	private function randomizeValue(node:Node):Void
 	{
 		if (node.value != -1) throw "Randomizing node with existing value.";
-		if (Math.random() < Math.min(0.2,swipes / 100 ))
-			node.value = MAX_VALUE;
-		else
-		{
 			node.value = Math.floor(Math.random() * MAX_VALUE);
+			if (Math.random() < Math.min(0.2,(swipes-20) / 400 ))
+				node.value = MAX_VALUE;
+		
 			//Spawn causes removal. Ignore.
 			if (remove().length > 0)
 				node.value = -1;
-		}
 	}
 	
 	/**

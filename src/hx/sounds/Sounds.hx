@@ -31,7 +31,7 @@ class Sounds
 	public static var START:String = "ExeCUTE_start.ogg";
 	public static var BACKGROUND:String = "ExeCUTE_loop.ogg";
 
-	private static var bg_volume:Float = 1;
+	private static var bg_volume:Float = 0.3;
 	
 	
 	/**
@@ -53,7 +53,7 @@ class Sounds
 	
 	private static var ingame:Bool = false;
 	
-	private static var musicvol:Float = 0.5;
+	private static var musicvol:Float = 0.3;
 	
 	/**
 	* Initializes the background sound.

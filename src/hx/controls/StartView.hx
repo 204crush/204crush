@@ -37,7 +37,7 @@ class StartView extends Container
 		super();
 		this.initializeControls();
 		soundObj = Sounds.playEffect(Sounds.START, 0, 0.3);
-		this.soundObj.addEventListener("complete", function() {Sounds.playEffect(Sounds.BACKGROUND, 0.3); } );
+		this.soundObj.addEventListener("complete", function() {Sounds.playEffect(Sounds.BACKGROUND, -1, 0.3); } );
 	}
 	
 	private function initializeControls():Void
