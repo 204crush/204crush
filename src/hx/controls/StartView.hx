@@ -20,7 +20,9 @@ class StartView extends Container
 	private var swipe:Sprite;
 	private var text:Sprite;
 	private var match:Sprite;
-	public var start:Sprite;
+	public var start_small:Sprite;
+	public var start_medium:Sprite;
+	public var start_big:Sprite;
 	
 	private var origsize:Rectangle;
 	
@@ -52,11 +54,23 @@ class StartView extends Container
 		this.text.x = 1184;
 		this.text.y = 760;
 		
-		this.start = Asset.getImage("button_start.png", false);
-		this.start.anchor.set(0.5, 0);
-		this.start.x = 1024;
-		this.start.y = 1224;
-		this.start.interactive = true;
+		this.start_small = Asset.getImage("button_board_small.png", false);
+		this.start_small.anchor.set(0.5, 0);
+		this.start_small.x = 774;
+		this.start_small.y = 1224;
+		this.start_small.interactive = true;
+		
+		this.start_medium = Asset.getImage("button_board_medium.png", false);
+		this.start_medium.anchor.set(0.5, 0);
+		this.start_medium.x = 1024;
+		this.start_medium.y = 1224;
+		this.start_medium.interactive = true;
+		
+		this.start_big = Asset.getImage("button_board_big.png", false);
+		this.start_big.anchor.set(0.5, 0);
+		this.start_big.x = 1274;
+		this.start_big.y = 1224;
+		this.start_big.interactive = true;
 		
 		this.bg = Asset.getImage("bg.png", false);
 		this.bg.anchor.set(0, 0.15);
@@ -71,7 +85,9 @@ class StartView extends Container
 		this.addChild(this.swipe);
 		this.addChild(this.match);
 		this.addChild(this.text);
-		this.addChild(this.start);
+		this.addChild(this.start_small);
+		this.addChild(this.start_medium);
+		this.addChild(this.start_big);
 	}
 	
 	public function resize(size:Rectangle)

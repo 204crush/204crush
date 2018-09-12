@@ -108,7 +108,7 @@ Main.prototype = {
 		var options = { };
 		options.autoResize = false;
 		options.antialias = true;
-		options.backgroundColor = 0;
+		options.backgroundColor = 5039460;
 		options.clearBeforeRender = true;
 		options.preserveDrawingBuffer = false;
 		options.roundPixels = false;
@@ -130,7 +130,6 @@ Main.prototype = {
 		this.ticker.add($bind(this,this.onTickerTick));
 		this.start.start.addListener("click",$bind(this,this.onStartClick));
 		this.start.start.addListener("tap",$bind(this,this.onStartClick));
-		this.onStartClick();
 	}
 	,onStartClick: function() {
 		var _gthis = this;
@@ -326,6 +325,8 @@ controls_Block.prototype = $extend(PIXI.Container.prototype,{
 	,__class__: controls_Block
 });
 var controls_GameView = $hx_exports["GV"] = function() {
+	this.minRectPortraitGame = new PIXI.Rectangle(568,0,920,1080);
+	this.minRectGame = new PIXI.Rectangle(272,50,1528,1050);
 	this._score = 0;
 	PIXI.Container.call(this);
 	this.initializeControls();
@@ -338,13 +339,21 @@ controls_GameView.prototype = $extend(PIXI.Container.prototype,{
 		this.control = new controls_GridControl();
 		this.control.x = 640;
 		this.control.y = 220;
+		this.control.onGameEnd = $bind(this,this.onGameEnd);
 		this.control.addListener(controls_GridControl.ON_BLOCK_REMOVE,$bind(this,this.onBlockRemove));
 		this.score = new controls_Score();
 		this.score.x = 640;
-		this.score.y = 110;
+		this.score.y = 90;
+		this.praises = new controls_PraiseManager();
+		this.praises.x = this.control.x + Math.floor(controls_GridControl.BLOCK_WIDTH * logic_GridLogic.GRID_WIDTH / 2);
+		this.praises.y = this.control.y + Math.floor(controls_GridControl.BLOCK_WIDTH * logic_GridLogic.GRID_WIDTH / 2);
 		this.addChild(this.bg);
 		this.addChild(this.control);
 		this.addChild(this.score);
+		this.addChild(this.praises);
+	}
+	,onGameEnd: function() {
+		this.emit(controls_GameView.GAME_ENDED);
 	}
 	,prepare: function() {
 		this._score = 0;
@@ -360,17 +369,30 @@ controls_GameView.prototype = $extend(PIXI.Container.prototype,{
 	}
 	,resize: function(size) {
 		this.size = size;
-		var s = Math.max(size.width / this.bg.width,size.height / this.bg.height);
-		this.scale.x = this.scale.y = s;
-		this.x = Math.round((size.width - this.bg.width * s) / 2);
-		this.y = Math.round((size.height - this.bg.height * s) / 2);
-		if(size.width > size.height) {
-			this.y = 0;
+		var tr = this.getTargetRect();
+		this.width = tr.width;
+		this.height = tr.height;
+		this.x = tr.x;
+		this.y = tr.y;
+	}
+	,getTargetRect: function() {
+		var ret = new PIXI.Rectangle(0,0,0,0);
+		var iswide = this.size.width > this.size.height;
+		var mr = iswide ? this.minRectGame : this.minRectPortraitGame;
+		var s = Math.min(this.size.width / mr.width,this.size.height / mr.height);
+		ret.width = this.bg.width * s;
+		ret.height = this.bg.height * s;
+		ret.x = Math.round((this.size.width - this.bg.width * s) / 2);
+		ret.y = Math.floor(Math.max(-mr.y * s,Math.floor(this.size.height - this.bg.height * s + 50 * s)));
+		if(this.size.width < this.size.height) {
+			ret.y = Math.floor(Math.max(ret.y,-1970 * s + this.size.height));
 		}
+		return ret;
 	}
 	,__class__: controls_GameView
 });
 var controls_GridControl = function() {
+	this.chains = 0;
 	this.enabled = false;
 	this.swipeDirection = new PIXI.Point(0.0,0.0);
 	this.swipeStop = new PIXI.Point(0.0,0.0);
@@ -410,6 +432,8 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 			}
 		}
 		this.addChild(this.blockContainer);
+		this.lineAnimator = new controls_LineAnimator();
+		this.addChild(this.lineAnimator);
 		this.enabled = true;
 	}
 	,prepare: function() {
@@ -434,6 +458,45 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 		}
 		this.enabled = false;
 		this.syncNodes(false);
+	}
+	,handleSpecial: function() {
+		var found = false;
+		if(this.lastLines != null) {
+			var _g = 0;
+			var _g1 = this.lastLines;
+			while(_g < _g1.length) {
+				var line = _g1[_g];
+				++_g;
+				if(line.isSquare) {
+					haxe_Log.trace("IS SQUARE",{ fileName : "GridControl.hx", lineNumber : 132, className : "controls.GridControl", methodName : "handleSpecial"});
+					var cleared = this.logic.applySquareClear(line.value);
+					this.lineAnimator.animateNodes(cleared,line);
+				} else if(line.nodes.length == 5) {
+					this.logic.applyLineClear(line.nodes[2].x,line.nodes[2].y,logic_Orientation.vertical);
+					this.logic.applyLineClear(line.nodes[2].x,line.nodes[2].y,logic_Orientation.horizontal);
+					haxe_Log.trace("CLEAR 5",{ fileName : "GridControl.hx", lineNumber : 141, className : "controls.GridControl", methodName : "handleSpecial"});
+					found = true;
+					this.lineAnimator.animateHorizontal(line.nodes[2],line);
+					this.lineAnimator.animateVertical(line.nodes[2],line);
+				} else if(line.nodes.length == 4) {
+					this.logic.applyLineClear(line.nodes[0].x,line.nodes[0].y,line.orientation);
+					haxe_Log.trace("CLEAR 4",{ fileName : "GridControl.hx", lineNumber : 149, className : "controls.GridControl", methodName : "handleSpecial"});
+					found = true;
+					if(line.orientation == logic_Orientation.horizontal) {
+						this.lineAnimator.animateHorizontal(line.nodes[0],line);
+					} else {
+						this.lineAnimator.animateVertical(line.nodes[0],line);
+					}
+				}
+				var _g2 = 0;
+				var _g3 = this.lastLines;
+				while(_g2 < _g3.length) {
+					var line2 = _g3[_g2];
+					++_g2;
+				}
+			}
+		}
+		return found;
 	}
 	,syncNodes: function(middleStep) {
 		var _g = 0;
@@ -488,33 +551,195 @@ controls_GridControl.prototype = $extend(PIXI.Container.prototype,{
 	}
 	,doSwipe: function(direction) {
 		if(direction != null && this.enabled) {
+			this.chains = 0;
 			this.enabled = false;
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
 			this.syncNodes(false);
-			this.lastRemoved = this.logic.remove();
+			this.lastLines = [];
+			this.lastRemoved = this.logic.remove(this.lastLines);
 			haxe_Timer.delay($bind(this,this.nextStep),550);
 		}
 	}
 	,nextStep: function() {
 		if(this.lastRemoved.length > 0) {
-			this.logic.clearRemoved(this.lastRemoved);
-			this.logic.swipe(this.lastSwipeDirection);
-			this.syncNodes(true);
-			var removed = this.lastRemoved.length;
-			this.lastRemoved = this.logic.remove();
-			if(this.lastRemoved.length == 0) {
-				this.enabled = true;
+			this.chains++;
+			if(this.chains > 1) {
+				controls_PraiseManager.showMessage("Chained " + this.chains + "X!",400);
 			}
-			haxe_Timer.delay($bind(this,this.nextStep),600);
-			this.emit(controls_GridControl.ON_BLOCK_REMOVE,removed * 15);
+			this.logic.clearRemoved(this.lastRemoved);
+			var specialFound = this.handleSpecial();
+			if(specialFound) {
+				this.lastLines = [];
+				haxe_Timer.delay($bind(this,this.nextStep),300);
+			} else {
+				this.logic.swipe(this.lastSwipeDirection);
+				this.syncNodes(true);
+				var removed = this.lastRemoved.length;
+				this.lastLines = [];
+				this.lastRemoved = this.logic.remove(this.lastLines);
+				if(this.lastRemoved.length == 0) {
+					this.enabled = true;
+				}
+				haxe_Timer.delay($bind(this,this.nextStep),600);
+				this.emit(controls_GridControl.ON_BLOCK_REMOVE,removed * 15);
+			}
 		} else {
 			this.logic.spawnRandom();
 			this.syncNodes(false);
 			this.enabled = true;
+			if(this.logic.isFinished()) {
+				this.enabled = false;
+				controls_PraiseManager.showMessage("GAME OVER :(",500);
+				haxe_Timer.delay(this.onGameEnd,2000);
+			}
 		}
 	}
 	,__class__: controls_GridControl
+});
+var controls_LineAnimator = function() {
+	this.curind = 0;
+	this.sprites = [];
+	PIXI.Container.call(this);
+	this.initializeControls();
+};
+controls_LineAnimator.__name__ = true;
+controls_LineAnimator.__super__ = PIXI.Container;
+controls_LineAnimator.prototype = $extend(PIXI.Container.prototype,{
+	initializeControls: function() {
+		var _g = 0;
+		while(_g < 100) {
+			var i = _g++;
+			var s = util_Asset.getImage("gfx_whitestar.png",true);
+			this.addChild(s);
+			this.sprites.push(s);
+			s.anchor.x = s.anchor.y = 0.5;
+			s.width = s.height = controls_GridControl.BLOCK_HEIGHT - 60 / logic_GridLogic.GRID_HEIGHT;
+			s.visible = false;
+		}
+	}
+	,animateVertical: function(node,line) {
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_HEIGHT;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var tx = node.x * controls_GridControl.BLOCK_WIDTH + Math.max(0,node.x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
+			var ty = i * controls_GridControl.BLOCK_HEIGHT + Math.max(0,node.y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
+			var s = this.sprites[this.curind % this.sprites.length];
+			this.curind++;
+			s.visible = true;
+			if(line.value != -1) {
+				s.tint = [255,65280,16776960,16777215][line.value];
+			}
+			s.x = tx;
+			s.y = ty;
+			s.alpha = 0;
+			s.scale.x = s.scale.y = 1;
+			s.rotation = Math.random() * Math.PI * 5;
+			var dist = Math.floor(10 + Math.abs(i - node.y) * 80);
+			createjs.Tween.get(s.scale).wait(dist).to({ x : 2.0, y : 2.0},650,createjs.Ease.quadOut);
+			var tmp = Math.PI + s.rotation;
+			createjs.Tween.get(s).wait(dist).to({ alpha : 1, rotation : tmp},150,createjs.Ease.quadOut).to({ alpha : 0},500,createjs.Ease.quadOut);
+		}
+	}
+	,animateHorizontal: function(node,line) {
+		var _g1 = 0;
+		var _g = logic_GridLogic.GRID_WIDTH;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var tx = i * controls_GridControl.BLOCK_WIDTH + Math.max(0,node.x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
+			var ty = node.y * controls_GridControl.BLOCK_HEIGHT + Math.max(0,node.y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
+			var s = this.sprites[this.curind % this.sprites.length];
+			this.curind++;
+			s.visible = true;
+			if(line.value != -1) {
+				s.tint = [255,65280,16776960,16777215][line.value];
+			}
+			s.x = tx;
+			s.y = ty;
+			s.alpha = 0;
+			s.scale.x = s.scale.y = 1;
+			s.rotation = Math.random() * Math.PI * 5;
+			var dist = Math.floor(10 + Math.abs(i - node.y) * 80);
+			createjs.Tween.get(s.scale).wait(dist).to({ x : 2.0, y : 2.0},650,createjs.Ease.quadOut);
+			var tmp = Math.PI + s.rotation;
+			createjs.Tween.get(s).wait(dist).to({ alpha : 1, rotation : tmp},150,createjs.Ease.quadOut).to({ alpha : 0},500,createjs.Ease.quadOut);
+		}
+	}
+	,animateNodes: function(nodes,line) {
+		var _g = 0;
+		while(_g < nodes.length) {
+			var node = nodes[_g];
+			++_g;
+			var tx = node.x * controls_GridControl.BLOCK_WIDTH + Math.max(0,node.x - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_WIDTH / 2;
+			var ty = node.y * controls_GridControl.BLOCK_HEIGHT + Math.max(0,node.y - 1) * controls_GridControl.SPACING + controls_GridControl.BLOCK_HEIGHT / 2;
+			var s = this.sprites[this.curind % this.sprites.length];
+			this.curind++;
+			s.visible = true;
+			if(line.value != -1) {
+				s.tint = [255,65280,16776960,16777215][line.value];
+			}
+			s.x = tx;
+			s.y = ty;
+			s.alpha = 0;
+			s.scale.x = s.scale.y = 1;
+			s.rotation = Math.random() * Math.PI * 5;
+			var dist = Math.floor(10 + Math.random() * 250);
+			createjs.Tween.get(s.scale).wait(dist).to({ x : 2.0, y : 2.0},650,createjs.Ease.quadOut);
+			var tmp = Math.PI + s.rotation;
+			createjs.Tween.get(s).wait(dist).to({ alpha : 1, rotation : tmp},150,createjs.Ease.quadOut).to({ alpha : 0},500,createjs.Ease.quadOut);
+		}
+	}
+	,__class__: controls_LineAnimator
+});
+var controls_PraiseManager = $hx_exports["PraiseManager"] = function() {
+	this.current = 0;
+	PIXI.Container.call(this);
+	controls_PraiseManager.instance = this;
+	this.initializeControls();
+};
+controls_PraiseManager.__name__ = true;
+controls_PraiseManager.showMessage = function(message,delay) {
+	haxe_Timer.delay(function() {
+		controls_PraiseManager.instance.showPraise(message);
+	},delay);
+};
+controls_PraiseManager.__super__ = PIXI.Container;
+controls_PraiseManager.prototype = $extend(PIXI.Container.prototype,{
+	initializeControls: function() {
+		var ts = { };
+		ts.dropShadow = true;
+		ts.dropShadowColor = "#4d2424";
+		ts.dropShadowBlur = 10;
+		ts.fontFamily = "ar_christyregular";
+		ts.fontSize = 90;
+		ts.fill = 16719360;
+		ts.fill = 12189951;
+		this.texts = [];
+		var _g = 0;
+		while(_g < 6) {
+			var i = _g++;
+			var text = new PIXI.Text("4 chain!",ts);
+			this.texts.push(text);
+			text.visible = false;
+			this.addChild(text);
+		}
+	}
+	,showPraise: function(message) {
+		this.current++;
+		this.current %= this.texts.length;
+		var text = this.texts[this.current];
+		text.text = message;
+		text.scale.x = text.scale.y = 1;
+		text.pivot.x = text.width / 2;
+		text.pivot.y = text.height / 2;
+		text.visible = true;
+		text.alpha = 1;
+		createjs.Tween.get(text.pivot).to({ y : 90},1500,createjs.Ease.quadOut);
+		createjs.Tween.get(text.scale).to({ x : 1.4, y : 1.4},1500,createjs.Ease.quadOut);
+		createjs.Tween.get(text).wait(1000,true).to({ alpha : 0},500,createjs.Ease.quadOut);
+	}
+	,__class__: controls_PraiseManager
 });
 var controls_Score = function() {
 	this.curScore = 0;
@@ -534,15 +759,16 @@ controls_Score.prototype = $extend(PIXI.Container.prototype,{
 	,initializeControls: function() {
 		var ts = { };
 		ts.dropShadow = true;
-		ts.dropShadowColor = "rgba(0,0,0,0.3)";
-		ts.dropShadowBlur = 3;
+		ts.dropShadowColor = "#4d2424";
+		ts.dropShadowBlur = 10;
+		ts.fontFamily = "ar_christyregular";
 		ts.fontSize = 90;
-		ts.fill = 16777215;
+		ts.fill = 12189951;
 		this.scoreField = new PIXI.Text("12512",ts);
 		this.addChild(this.scoreField);
 	}
 	,ontick: function(delta) {
-		this.curScore += Math.round(this.scoreTarget - this.curScore) / 30;
+		this.curScore += Math.round(this.scoreTarget - this.curScore) / 15;
 		if(this.curScore - 1 > this.scoreTarget) {
 			this.curScore = this.scoreTarget;
 		}
@@ -562,14 +788,37 @@ controls_StartView.__name__ = true;
 controls_StartView.__super__ = PIXI.Container;
 controls_StartView.prototype = $extend(PIXI.Container.prototype,{
 	initializeControls: function() {
-		this.logo = util_Asset.getImage("logo.png",true);
-		this.start = util_Asset.getImage("start_button.png",true);
-		this.bg = util_Asset.getImage("bg.jpg",false);
-		this.start.y = 720;
-		this.start.x = 110;
+		this.logo = util_Asset.getImage("logo.png",false);
+		this.logo.anchor.set(0.5,0);
+		this.logo.x = 1024;
+		this.logo.y = 200;
+		this.swipe = util_Asset.getImage("tutorial_swipe.png",false);
+		this.swipe.anchor.set(0.5,0);
+		this.swipe.x = 760;
+		this.swipe.y = 580;
+		this.match = util_Asset.getImage("tutorial_match.png",false);
+		this.match.anchor.set(0.5,0);
+		this.match.x = 760;
+		this.match.y = 900;
+		this.text = util_Asset.getImage("text_tutorial.png",false);
+		this.text.anchor.set(0.5,0);
+		this.text.x = 1184;
+		this.text.y = 760;
+		this.start = util_Asset.getImage("button_start.png",false);
+		this.start.anchor.set(0.5,0);
+		this.start.x = 1024;
+		this.start.y = 1224;
 		this.start.interactive = true;
+		this.bg = util_Asset.getImage("bg.png",false);
+		this.bg.anchor.set(0,0.15);
+		this.bg_sky = util_Asset.getImage("bg_sky.png",false);
+		this.bg_no_sky = util_Asset.getImage("bg_no_sky.png",false);
 		this.addChild(this.bg);
-		this.logo.addChild(this.start);
+		this.addChild(this.logo);
+		this.addChild(this.swipe);
+		this.addChild(this.match);
+		this.addChild(this.text);
+		this.addChild(this.start);
 	}
 	,resize: function(size) {
 		var s = Math.max(size.width / this.bg.width,size.height / this.bg.height);
@@ -1325,7 +1574,7 @@ logic_GridLogic.prototype = {
 		n2.x = n1x;
 		n2.y = n1y;
 	}
-	,remove: function() {
+	,remove: function(outLines) {
 		var found = [];
 		var _g1 = 0;
 		var _g = logic_GridLogic.GRID_WIDTH;
@@ -1346,7 +1595,11 @@ logic_GridLogic.prototype = {
 			var n = _g12[_g3];
 			++_g3;
 			var match = this.testSquareMatch(n);
-			if(match != null) {
+			if(match != null && match.length > 0) {
+				haxe_Log.trace("-is square logic",{ fileName : "GridLogic.hx", lineNumber : 259, className : "logic.GridLogic", methodName : "remove"});
+				if(outLines != null) {
+					outLines.push({ isSquare : true, value : n.value, nodes : match, orientation : null});
+				}
 				var _g21 = 0;
 				while(_g21 < match.length) {
 					var rn = match[_g21];
@@ -1361,6 +1614,9 @@ logic_GridLogic.prototype = {
 		while(_g4 < found.length) {
 			var line = found[_g4];
 			++_g4;
+			if(outLines != null) {
+				outLines.push(line);
+			}
 			var _g13 = 0;
 			var _g22 = line.nodes;
 			while(_g13 < _g22.length) {
@@ -1372,9 +1628,42 @@ logic_GridLogic.prototype = {
 			}
 		}
 		if(removed.length > 0) {
-			haxe_Log.trace("REMVOED: " + removed.length,{ fileName : "GridLogic.hx", lineNumber : 276, className : "logic.GridLogic", methodName : "remove"});
+			haxe_Log.trace("REMVOED: " + removed.length,{ fileName : "GridLogic.hx", lineNumber : 280, className : "logic.GridLogic", methodName : "remove"});
 		}
 		return removed;
+	}
+	,applySquareClear: function(value) {
+		var toClear = [];
+		var _g = 0;
+		var _g1 = this.nodes;
+		while(_g < _g1.length) {
+			var n = _g1[_g];
+			++_g;
+			if(n.value == value && value > 0) {
+				n.value = -1;
+				toClear.push(n);
+			}
+		}
+		haxe_Log.trace("SQUARE CLEARS: " + toClear.length,{ fileName : "GridLogic.hx", lineNumber : 295, className : "logic.GridLogic", methodName : "applySquareClear"});
+		return toClear;
+	}
+	,applyLineClear: function(x,y,orientation) {
+		haxe_Log.trace("Clear line: " + x + ", " + y + ", " + Std.string(orientation),{ fileName : "GridLogic.hx", lineNumber : 301, className : "logic.GridLogic", methodName : "applyLineClear"});
+		if(orientation == logic_Orientation.horizontal) {
+			var _g1 = 0;
+			var _g = logic_GridLogic.GRID_WIDTH;
+			while(_g1 < _g) {
+				var x1 = _g1++;
+				this.grid[x1][y].value = -1;
+			}
+		} else if(orientation == logic_Orientation.vertical) {
+			var _g11 = 0;
+			var _g2 = logic_GridLogic.GRID_HEIGHT;
+			while(_g11 < _g2) {
+				var y1 = _g11++;
+				this.grid[x][y1].value = -1;
+			}
+		}
 	}
 	,clearRemoved: function(removed) {
 		var _g = 0;
@@ -1414,13 +1703,13 @@ logic_GridLogic.prototype = {
 				current.push(cmp);
 			} else {
 				if(current.length >= 3) {
-					found.push({ orientation : logic_Orientation.horizontal, nodes : current});
+					found.push({ isSquare : false, value : current[0].value, orientation : logic_Orientation.horizontal, nodes : current});
 				}
 				current = [cmp];
 			}
 		}
 		if(current.length >= 3) {
-			found.push({ orientation : logic_Orientation.horizontal, nodes : current});
+			found.push({ isSquare : false, value : current[0].value, orientation : logic_Orientation.horizontal, nodes : current});
 		}
 	}
 	,sweepTestVertical: function(found,x) {
@@ -1434,13 +1723,13 @@ logic_GridLogic.prototype = {
 				current.push(cmp);
 			} else {
 				if(current.length >= 3) {
-					found.push({ orientation : logic_Orientation.vertical, nodes : current});
+					found.push({ isSquare : false, value : current[0].value, orientation : logic_Orientation.vertical, nodes : current});
 				}
 				current = [cmp];
 			}
 		}
 		if(current.length >= 3) {
-			found.push({ orientation : logic_Orientation.vertical, nodes : current});
+			found.push({ isSquare : false, value : current[0].value, orientation : logic_Orientation.vertical, nodes : current});
 		}
 	}
 	,isFinished: function() {
@@ -1472,7 +1761,7 @@ logic_GridLogic.prototype = {
 			}
 			s += "\n";
 		}
-		haxe_Log.trace(s,{ fileName : "GridLogic.hx", lineNumber : 384, className : "logic.GridLogic", methodName : "printGrid"});
+		haxe_Log.trace(s,{ fileName : "GridLogic.hx", lineNumber : 422, className : "logic.GridLogic", methodName : "printGrid"});
 	}
 	,__class__: logic_GridLogic
 };
@@ -2088,7 +2377,7 @@ if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_html_compat_ArrayBuffer.sliceImpl;
 }
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
-Config.ASSETS = ["img/ui.json","img/block_green.json","img/block_purple.json","img/block_orange.json","img/block_blue.json","img/bg.jpg","img/trail.png"];
+Config.ASSETS = ["img/ui.json","img/block_green.json","img/block_purple.json","img/block_orange.json","img/block_blue.json","img/bg.jpg","img/bg.png","img/bg_no_sky.png","img/bg_sky.png","img/trail.png","img/logo.png","img/button_start.png","img/tutorial_swipe.png","img/tutorial_match.png","img/text_tutorial.png"];
 Config.VERSION = "204crush 0.1";
 controls_Block.moveLeft = [];
 controls_Block.moveRight = [];
@@ -2097,6 +2386,7 @@ controls_Block.moveDown = [];
 controls_Block.death = [];
 controls_Block.defaultAnim = [];
 controls_Block.idle = [];
+controls_GameView.GAME_ENDED = "onGameEnded";
 controls_GridControl.ON_BLOCK_REMOVE = "onBlockRemove";
 controls_GridControl.SPACING = 0;
 controls_GridControl.BLOCK_HEIGHT = 130;
