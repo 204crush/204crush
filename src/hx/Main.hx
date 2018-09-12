@@ -180,9 +180,12 @@ class Main
 		this.ticker.start();
 		this.ticker.add(onTickerTick);
 		
-		this.start.start.addListener("click", onStartClick);
-		this.start.start.addListener("tap", onStartClick);
-		
+		this.start.start_small.addListener("click", onStartClick_Small);
+		this.start.start_small.addListener("tap", onStartClick_Small);
+		this.start.start_medium.addListener("click", onStartClick_Medium);
+		this.start.start_medium.addListener("tap", onStartClick_Medium);
+		this.start.start_big.addListener("click", onStartClick_Big);
+		this.start.start_big.addListener("tap", onStartClick_Big);
 		
 		this.end.again.addListener("click", onAgainClick);
 		this.end.again.addListener("tap", onAgainClick);
@@ -191,6 +194,27 @@ class Main
 		this.end.back.addListener("tap", onBackClick);
 		
 		this.game.addListener(GameView.GAME_ENDED, onGameEnd);
+	}
+	
+	private function onStartClick_Small():Void
+	{
+		GridLogic.GRID_HEIGHT = 6;
+		GridLogic.GRID_WIDTH = 6;
+		onStartClick();
+	}
+	
+	private function onStartClick_Medium():Void
+	{
+		GridLogic.GRID_HEIGHT = 7;
+		GridLogic.GRID_WIDTH = 7;
+		onStartClick();
+	}
+	
+	private function onStartClick_Big():Void
+	{
+		GridLogic.GRID_HEIGHT = 8;
+		GridLogic.GRID_WIDTH = 8;
+		onStartClick();
 	}
 	
 	private function onStartClick():Void
