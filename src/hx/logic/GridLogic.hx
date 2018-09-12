@@ -265,7 +265,7 @@ class GridLogic
 			{
 				trace("-is square logic");
 				if(outLines != null)
-					outLines.push({isSquare:true, value:n.value, nodes:match, orientation:null});
+					outLines.push({isSquare:true, value:match[0].value, nodes:match, orientation:null});
 				for (rn in match)
 				{
 					if (removed.indexOf(rn) == -1) removed.push(rn);
@@ -293,13 +293,13 @@ class GridLogic
 		var toClear:Array<Node> = [];
 		for (n in nodes)
 		{
-			if (n.value == value && value > 0)
+			if (n.value == value && value >= 0)
 			{
 				n.value = -1;
 				toClear.push(n);
 			}
 		}
-		trace("SQUARE CLEARS: " + toClear.length);
+		trace("SQUARE CLEARS: " + toClear.length + " of value " + value);
 		return toClear;
 	}
 	
