@@ -21,6 +21,7 @@ class Config
 		"img/block_orange.json",
 		"img/block_blue.json",
 		"img/bg.jpg",
+		"img/bg.png",
 		"img/bg_no_sky.png",
 		"img/bg_sky.png",
 		"img/trail.png",
