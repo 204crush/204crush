@@ -222,7 +222,6 @@ class Main
 	
 	private function onStartClick():Void
 	{
-		Sounds.playEffect(Sounds.TOGGLE);
 		this.start.interactiveChildren = false;
 		this.start.visible = false;
 		this.end._score.setScore(0);
@@ -243,7 +242,6 @@ class Main
 	
 	private function onBackClick():Void
 	{
-		Sounds.playEffect(Sounds.TOGGLE);
 		this.end.interactiveChildren = false;
 		this.end.visible = false;
 		this.start.visible = true;
@@ -252,7 +250,6 @@ class Main
 	
 	private function onGameEnd():Void
 	{
-		Sounds.playEffect(Sounds.TOGGLE);
 		this.end.interactiveChildren = true;
 		this.end._score.setScore(GameView._score);
 		this.game.interactiveChildren = false;
