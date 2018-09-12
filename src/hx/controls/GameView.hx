@@ -53,8 +53,10 @@ class GameView extends Container
 		this.bg = Asset.getImage("bg_no_sky.png", false);
 		this.bgSky = Asset.getImage("bg_sky.png", false);
 		this.logo = Asset.getImage("logo.png", false);
-		this.logo.anchor.set(0.5, 0.0);
+		this.logo.anchor.set(0.5);
+		this.logo.scale.set(0.5);
 		this.scoreBG = Asset.getImage("bg_score.png", false);
+		this.scoreBG.anchor.set(0.5,0);
 		
 		this.control = new GridControl();
 		this.control.x = 640;
@@ -65,6 +67,7 @@ class GameView extends Container
 		this.score = new Score();
 		this.score.x = 640;
 		this.score.y = 90;
+		this.score.scale.set(0.75);
 		
 		this.praises = new PraiseManager();
 		this.praises.x = control.x + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) / 2);
@@ -75,11 +78,11 @@ class GameView extends Container
 		this.addChild(this.bgSky);
 		this.addChild(this.bg);
 		this.addChild(this.control);
+		this.addChild(this.scoreBG);
 		this.addChild(this.score);
 		this.addChild(this.praises);
 		this.addChild(this.lineAnimator);
 		this.addChild(this.logo);
-		this.addChild(this.scoreBG);
 	}
 	
 	private function onGameEnd():Void
@@ -116,14 +119,18 @@ class GameView extends Container
 		
 		if ( size.width > size.height ) //Landscape
 		{
+			logoPos.set(450, 512);
+			scorePos.set(1624, 512);
 		} else // Portrait
 		{
 			this.y += 200;
 			bgSky.y = -200 / this.scale.y;
+			logoPos.set(1024-200, 0);
+			scorePos.set(1024+200, 0);
 		}
 		
 		this.score.x = scorePos.x;
-		this.score.y = scorePos.y;
+		this.score.y = scorePos.y + 30;
 		this.scoreBG.x = scorePos.x;
 		this.scoreBG.y = scorePos.y;
 		this.logo.x = logoPos.x;
