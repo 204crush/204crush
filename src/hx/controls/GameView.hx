@@ -5,6 +5,7 @@ import createjs.tweenjs.Tween;
 import haxe.Timer;
 import js.Lib;
 import js.html.ScreenOrientation;
+import logic.GridLogic;
 import particles.ParticleManager;
 import pixi.core.display.Container;
 import pixi.core.math.Point;
@@ -23,6 +24,7 @@ import util.Pool;
 class GameView extends Container
 {
 	private var score:Score;
+	private var praises:PraiseManager;
 	
 	private var bg:Sprite;
 	private var control:GridControl;
@@ -49,9 +51,14 @@ class GameView extends Container
 		this.score.x = 640;
 		this.score.y = 110;
 		
+		this.praises = new PraiseManager();
+		this.praises.x = control.x + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) / 2);
+		this.praises.y = control.y + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) / 2);
+		
 		this.addChild(this.bg);
 		this.addChild(this.control);
 		this.addChild(this.score);
+		this.addChild(this.praises);
 	}
 	
 	public function prepare():Void
