@@ -139,7 +139,7 @@ class Main
 		var options:RenderingOptions = { };
 		options.autoResize = false;
 		options.antialias = true;
-		options.backgroundColor = 0x0;
+		options.backgroundColor = 0x4ce564;
 		options.clearBeforeRender = true;
 		options.preserveDrawingBuffer = false;
 		options.roundPixels = false;

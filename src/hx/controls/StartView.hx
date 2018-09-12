@@ -58,14 +58,15 @@ class StartView extends Container
 		this.start.y = 1224;
 		this.start.interactive = true;
 		
-		this.bg = Asset.getImage("bg.jpg", false);
+		this.bg = Asset.getImage("bg.png", false);
+		this.bg.anchor.set(0, 0.15);
 		this.bg_sky = Asset.getImage("bg_sky.png", false);
 		this.bg_no_sky = Asset.getImage("bg_no_sky.png", false);
 		
 		
 		this.addChild(this.bg);
-		this.addChild(this.bg_sky);
-		this.addChild(this.bg_no_sky);
+		//this.addChild(this.bg_sky);
+		//this.addChild(this.bg_no_sky);
 		this.addChild(this.logo);
 		this.addChild(this.swipe);
 		this.addChild(this.match);
