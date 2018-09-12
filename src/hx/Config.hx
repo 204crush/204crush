@@ -25,6 +25,10 @@ class Config
 		"img/bg_sky.png",
 		"img/trail.png",
 		"img/logo.png",
+		"img/button_start.png",
+		"img/tutorial_swipe.png",
+		"img/tutorial_match.png",
+		"img/text_tutorial.png",
 		
 	];
 	

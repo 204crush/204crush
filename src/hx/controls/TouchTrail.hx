@@ -77,6 +77,15 @@ class TouchTrail extends Container
 			var t3 = t * t2;
 			return (2 * t3 - 3 * t2 + 1) * p[0] + (t3 - 2 * t2 + t) * m[0] + ( -2 * t3 + 3 * t2) * p[1] + (t3 - t2) * m[1];
 		}
+		
+		function popToHistory(mouseX:Float, mouseY:Float) {
+			
+			//Update the mouse values to history
+			historyX.pop();
+			historyX.unshift(mouseX);
+			historyY.pop();
+			historyY.unshift(mouseY);
+		}
 	}
 }
 /*
