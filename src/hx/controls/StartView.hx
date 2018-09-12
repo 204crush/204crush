@@ -1,5 +1,6 @@
 package controls;
 
+import createjs.easeljs.graphics.Rect;
 import createjs.tweenjs.Tween;
 import pixi.core.display.Container;
 import pixi.core.math.shapes.Rectangle;
@@ -27,6 +28,8 @@ class StartView extends Container
 	
 	private var origsize:Rectangle;
 	
+	
+	
 	public function new() 
 	{
 		super();
@@ -43,40 +46,40 @@ class StartView extends Container
 		this.swipe = Asset.getImage("tutorial_swipe.png", false);
 		this.swipe.anchor.set(0.5, 0);
 		this.swipe.x = 760;
-		this.swipe.y = 580;
+		this.swipe.y = 580-50;
 		
 		this.match = Asset.getImage("tutorial_match.png", false);
 		this.match.anchor.set(0.5, 0);
 		this.match.x = 760;
-		this.match.y = 900;
+		this.match.y = 900-50;
 		
 		this.text = Asset.getImage("text_tutorial.png", false);
 		this.text.anchor.set(0.5, 0);
 		this.text.x = 1184;
-		this.text.y = 760;
+		this.text.y = 760-50;
 		
 		this.start_small = Asset.getImage("button_board_small.png", false);
 		this.start_small.anchor.set(0.5, 0);
 		this.start_small.x = 764;
-		this.start_small.y = 1224;
+		this.start_small.y = 1224-50;
 		this.start_small.interactive = true;
 		
 		this.start_medium = Asset.getImage("button_board_medium.png", false);
 		this.start_medium.anchor.set(0.5, 0);
 		this.start_medium.x = 1024;
-		this.start_medium.y = 1224;
+		this.start_medium.y = 1224-50;
 		this.start_medium.interactive = true;
 		
 		this.start_big = Asset.getImage("button_board_big.png", false);
 		this.start_big.anchor.set(0.5, 0);
 		this.start_big.x = 1284;
-		this.start_big.y = 1224;
+		this.start_big.y = 1224-50;
 		this.start_big.interactive = true;
 		
 		this.bg_boardselection = Asset.getImage("bg_boardselection.png", false);
 		this.bg_boardselection.anchor.set(0.5, 0);
 		this.bg_boardselection.x = 1024;
-		this.bg_boardselection.y = 1154;
+		this.bg_boardselection.y = 1104;
 		this.bg_boardselection.interactive = true;
 		
 		this.bg = Asset.getImage("bg.png", false);
@@ -88,6 +91,7 @@ class StartView extends Container
 		this.addChild(this.bg);
 		//this.addChild(this.bg_sky);
 		//this.addChild(this.bg_no_sky);
+		
 		this.addChild(this.logo);
 		this.addChild(this.swipe);
 		this.addChild(this.match);
@@ -98,15 +102,40 @@ class StartView extends Container
 		this.addChild(this.start_big);
 	}
 	
-	public function resize(size:Rectangle)
+	private var size:Rectangle;
+	public function resize(size:Rectangle):Void
 	{
-		var s:Float = Math.max(size.width / bg.width, size.height / bg.height);
-		this.scale.x = this.scale.y = s;
+		this.size = size;
+		var tr:Rectangle = this.getTargetRect();
+		this.width = tr.width;
+		this.height = tr.height;
+		this.x = tr.x;
+		this.y = tr.y;
 		
-		//center the select.
-		this.x = Math.round(( size.width - bg.width * s) / 2);
-		this.y = Math.round(( size.height - bg.height * s) / 2 );
+	}
+	
+	private var minRectGame:Rectangle = new Rectangle(272, 170, 1528, 1152);
+	private var minRectPortraitGame:Rectangle = new Rectangle(568,0, 920, 1080);
+	private function getTargetRect():Rectangle
+	{
 		
+		var ret:Rectangle = new Rectangle(0,0,0,0);
+		var iswide:Bool = size.width > size.height;
+		var mr:Rectangle =  iswide ? minRectGame : minRectPortraitGame;
+		
+		var s:Float = Math.min(size.width / mr.width, size.height / mr.height);
+		ret.width = bg.width * s;
+		ret.height = bg.height * s;
+		
+		ret.x = Math.round((size.width - bg.width * s)/2);
+		ret.y = Math.floor( Math.max( -mr.y * s, Math.floor(( size.height - this.bg.height * s+50*s)))); 
+		if (size.width < size.height)
+		{
+			//Limit bottom on mobile.
+			ret.y =Math.floor( Math.max( ret.y, (-1970*s+size.height)));
+		}
+		
+		return ret;
 	}
 	
 }
