@@ -21,23 +21,9 @@ class Sounds
 	/**
 	 * Possible sounds. Mapped to id.
 	 */
-	public static var BLOB_SUCK:String = "blob_suck";
-	public static var BLOB_WRONG:String = "blob_wrong";
-	public static var BLOBS_COMBINE:String = "blobs_combine";
-	public static var BLOCK_BREAK:String = "block_break";
-	public static var BLOCK_HIT:String = "block_hit";
-	public static var TOGGLE:String = "toggle";
-	public static var ALU_BROMIDE:String = "alu_bromide";
-	public static var ALU_OXIDE:String = "alu_oxide";
-	public static var LITHIUM_BROMIDE:String = "lithium_bromide";
-	public static var LITHIUM_OXIDE:String = "lithium_oxide";
-	public static var MAG_BROMIDE:String = "mag_bromide";
-	public static var MAG_OXIDE:String = "mag_oxide";
-	public static var VICTORY:String = "victory";
-	
-
-	
-	public static var BACKGROUND:String = "Ion_in_A_Jar_01";
+	public static var SWOOSH:String = "swoosh.mp3";
+	public static var START:String = "ExeCUTE_start.ogg";
+	public static var BACKGROUND:String = "ExeCUTE_loop.ogg";
 
 	private static var bg_volume:Float = 1;
 	
@@ -76,15 +62,16 @@ class Sounds
 	//	Sound.alternateExtensions = ["mp3"];
 
 		sounds = [
+			{s:START, c:1 },
 			{s:BACKGROUND, c:1 },
-			
+			{s:SWOOSH, c:1 },
 			
 		];
 		
 		//Load single sounds
 		for (s in sounds)
 		{
-			Sound.registerSound(base + s.s+".mp3", s.s, s.c);
+			Sound.registerSound(base + s.s, s.s, s.c);
 		}
 		
 		//Listen for ios unlock. Soundjs does the initial unlocking automatically in 6.2 and forwards. This is used to start bg loop.

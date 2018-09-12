@@ -1,6 +1,7 @@
 package controls;
 
 import createjs.easeljs.graphics.Rect;
+import createjs.soundjs.AbstractSoundInstance;
 import createjs.tweenjs.Tween;
 import pixi.core.display.Container;
 import pixi.core.math.shapes.Rectangle;
@@ -28,12 +29,15 @@ class StartView extends Container
 	
 	private var origsize:Rectangle;
 	
+	private var soundObj:AbstractSoundInstance;
 	
 	
 	public function new() 
 	{
 		super();
 		this.initializeControls();
+		soundObj = Sounds.playEffect(Sounds.START);
+		this.soundObj.addEventListener("complete", function() {Sounds.playEffect(Sounds.BACKGROUND, 1); } );
 	}
 	
 	private function initializeControls():Void
@@ -86,7 +90,6 @@ class StartView extends Container
 		this.bg.anchor.set(0, 0.15);
 		this.bg_sky = Asset.getImage("bg_sky.png", false);
 		this.bg_no_sky = Asset.getImage("bg_no_sky.png", false);
-		
 		
 		this.addChild(this.bg);
 		//this.addChild(this.bg_sky);
