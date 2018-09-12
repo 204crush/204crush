@@ -36,8 +36,8 @@ class GameView extends Container
 	public static var _score:Int = 0;
 	private var lineAnimator:LineAnimator;
 	
-	private var logoPos:Point;
-	private var scorePos:Point;
+	private var logoPos:Point = new Point(0,0);
+	private var scorePos:Point = new Point(0,0);
 	
 	public function new() 
 	{
@@ -51,6 +51,7 @@ class GameView extends Container
 	{
 		this.bg = Asset.getImage("bg.jpg", false);
 		this.logo = Asset.getImage("logo.png", false);
+		this.logo.anchor.set(0.5, 0.0);
 		this.scoreBG = Asset.getImage("bg_score.png", false);
 		
 		this.control = new GridControl();
@@ -117,6 +118,13 @@ class GameView extends Container
 			this.y += 200;
 			bg.y = -200 / this.scale.y;
 		}
+		
+		this.score.x = scorePos.x;
+		this.score.y = scorePos.y;
+		this.scoreBG.x = scorePos.x;
+		this.scoreBG.y = scorePos.y;
+		this.logo.x = logoPos.x;
+		this.logo.y = logoPos.y;
 	}
 	
 	private var minRectGame:Rectangle = new Rectangle(272, 50, 1528, 1050);
