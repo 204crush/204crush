@@ -107,8 +107,10 @@ class StartView extends Container
 	{
 		this.size = size;
 		var tr:Rectangle = this.getTargetRect();
-		this.width = tr.width;
-		this.height = tr.height;
+		//this.width = tr.width;
+		//this.height = tr.height;
+		this.scale.x = this.scale.y = Math.min( tr.width / 2048, tr.height / 2048);
+		
 		this.x = tr.x;
 		this.y = tr.y;
 		
@@ -126,6 +128,7 @@ class StartView extends Container
 		var s:Float = Math.min(size.width / mr.width, size.height / mr.height);
 		ret.width = bg.width * s;
 		ret.height = bg.height * s;
+		
 		
 		ret.x = Math.round((size.width - bg.width * s)/2);
 		ret.y = Math.floor( Math.max( -mr.y * s, Math.floor(( size.height - this.bg.height * s+50*s)))); 
