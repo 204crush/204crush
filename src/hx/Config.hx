@@ -31,6 +31,7 @@ class Config
 		"img/tutorial_match.png",
 		"img/text_tutorial.png",
 		"img/bg_finalscore.png",
+		"img/bg_score.png",
 		"img/text_credits.png",
 		"img/button_again.png",
 		"img/button_endgame.png",

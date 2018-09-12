@@ -29,10 +29,15 @@ class GameView extends Container
 	private var praises:PraiseManager;
 	
 	private var bg:Sprite;
+	private var logo:Sprite;
+	private var scoreBG:Sprite;
 	private var control:GridControl;
 	private var size:Rectangle;
 	public static var _score:Int = 0;
 	private var lineAnimator:LineAnimator;
+	
+	private var logoPos:Point;
+	private var scorePos:Point;
 	
 	public function new() 
 	{
@@ -45,6 +50,9 @@ class GameView extends Container
 	private function initializeControls():Void
 	{
 		this.bg = Asset.getImage("bg.jpg", false);
+		this.logo = Asset.getImage("logo.png", false);
+		this.scoreBG = Asset.getImage("bg_score.png", false);
+		
 		this.control = new GridControl();
 		this.control.x = 640;
 		this.control.y = 220;
@@ -66,6 +74,8 @@ class GameView extends Container
 		this.addChild(this.score);
 		this.addChild(this.praises);
 		this.addChild(this.lineAnimator);
+		this.addChild(this.logo);
+		this.addChild(this.scoreBG);
 	}
 	
 	private function onGameEnd():Void
@@ -99,12 +109,21 @@ class GameView extends Container
 		this.height = tr.height;
 		this.x = tr.x;
 		this.y = tr.y;
+		
+		if ( size.width > size.height ) //Landscape
+		{
+		} else // Portrait
+		{
+			this.y += 200;
+			bg.y = -200 / this.scale.y;
+		}
 	}
 	
 	private var minRectGame:Rectangle = new Rectangle(272, 50, 1528, 1050);
 	private var minRectPortraitGame:Rectangle = new Rectangle(568,0, 920, 1080);
 	private function getTargetRect():Rectangle
 	{
+		
 		var ret:Rectangle = new Rectangle(0,0,0,0);
 		var iswide:Bool = size.width > size.height;
 		var mr:Rectangle =  iswide ? minRectGame : minRectPortraitGame;
