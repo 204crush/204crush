@@ -1,170 +1,88 @@
 {"frames": {
 
-"blockie.png":
+"death/blockie_blue_death01.png":
 {
-	"frame": {"x":1,"y":1,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"blockie_blue.png":
-{
-	"frame": {"x":495,"y":1483,"w":128,"h":128},
+	"frame": {"x":1,"y":1,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_death01.png":
+"death/blockie_blue_death02.png":
 {
-	"frame": {"x":495,"y":1613,"w":128,"h":128},
+	"frame": {"x":1,"y":131,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_death02.png":
+"default/blockie_blue.png":
 {
-	"frame": {"x":495,"y":1743,"w":128,"h":128},
+	"frame": {"x":1,"y":261,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_idle01.png":
+"down/blockie_blue_moving_down.png":
 {
-	"frame": {"x":625,"y":1483,"w":128,"h":128},
+	"frame": {"x":131,"y":1,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_idle02.png":
+"idle/blockie_blue_idle01.png":
 {
-	"frame": {"x":625,"y":1613,"w":128,"h":128},
+	"frame": {"x":261,"y":1,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_moving_down.png":
+"idle/blockie_blue_idle02.png":
 {
-	"frame": {"x":625,"y":1743,"w":128,"h":128},
+	"frame": {"x":131,"y":131,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_moving_left.png":
+"left/blockie_blue_moving_left.png":
 {
-	"frame": {"x":755,"y":1483,"w":128,"h":128},
+	"frame": {"x":131,"y":261,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_moving_right.png":
+"right/blockie_blue_moving_right.png":
 {
-	"frame": {"x":755,"y":1613,"w":128,"h":128},
+	"frame": {"x":261,"y":131,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
 },
-"blockie_blue_moving_up.png":
+"up/blockie_blue_moving_up.png":
 {
-	"frame": {"x":755,"y":1743,"w":128,"h":128},
+	"frame": {"x":261,"y":261,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
-},
-"death/blockie_purple_death01.png":
-{
-	"frame": {"x":495,"y":1,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"death/blockie_purple_death02.png":
-{
-	"frame": {"x":989,"y":1,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"default/blockie_purple.png":
-{
-	"frame": {"x":1,"y":495,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"down/blockie_purple_moving_down.png":
-{
-	"frame": {"x":495,"y":495,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"idle/blockie_purple_idle01.png":
-{
-	"frame": {"x":989,"y":495,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"idle/blockie_purple_idle02.png":
-{
-	"frame": {"x":1,"y":989,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"left/blockie_purple_moving_left.png":
-{
-	"frame": {"x":1,"y":1483,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"right/blockie_purple_moving_right.png":
-{
-	"frame": {"x":495,"y":989,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
-},
-"up/blockie_purple_moving_up.png":
-{
-	"frame": {"x":989,"y":989,"w":492,"h":492},
-	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":10,"y":10,"w":492,"h":492},
-	"sourceSize": {"w":512,"h":512}
 }},
 "animations": {
-	"blockie_blue_death": ["blockie_blue_death01.png","blockie_blue_death02.png"],
-	"blockie_blue_idle": ["blockie_blue_idle01.png","blockie_blue_idle02.png"],
-	"death/blockie_purple_death": ["death/blockie_purple_death01.png","death/blockie_purple_death02.png"],
-	"idle/blockie_purple_idle": ["idle/blockie_purple_idle01.png","idle/blockie_purple_idle02.png"]
+	"death/blockie_blue_death": ["death/blockie_blue_death01.png","death/blockie_blue_death02.png"],
+	"idle/blockie_blue_idle": ["idle/blockie_blue_idle01.png","idle/blockie_blue_idle02.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "block_blue.png",
 	"format": "RGBA8888",
-	"size": {"w":1482,"h":1976},
+	"size": {"w":390,"h":390},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:363155de740f49fe0d68e69938a753a8:fa6686a12ef095169b62ce612f1f05a9:61b85fa07fa49068a7b78915bf50782a$"
+	"smartupdate": "$TexturePacker:SmartUpdate:c4ec7d8b5ac68a05ef8a43fa7b24a749:9810960b6f2c14b41b852537882af2f3:61b85fa07fa49068a7b78915bf50782a$"
 }
 }

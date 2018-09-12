@@ -56,7 +56,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -82,7 +82,7 @@
         <key>atfFormats</key>
         <string></string>
         <key>textureFormat</key>
-        <enum type="SettingsBase::TextureFormat">png</enum>
+        <enum type="SettingsBase::TextureFormat">png8</enum>
         <key>borderPadding</key>
         <uint>0</uint>
         <key>maxTextureSize</key>
@@ -181,25 +181,24 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../assets/images/blocks/block_blue/blockie_blue.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/death/blockie_purple_death01.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/death/blockie_purple_death02.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/default/blockie_purple.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/down/blockie_purple_moving_down.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/idle/blockie_purple_idle01.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/idle/blockie_purple_idle02.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/left/blockie_purple_moving_left.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/right/blockie_purple_moving_right.png</key>
-            <key type="filename">../assets/images/blocks/block_blue/up/blockie_purple_moving_up.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/death/blockie_blue_death01.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/death/blockie_blue_death02.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/default/blockie_blue.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/down/blockie_blue_moving_down.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/idle/blockie_blue_idle01.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/idle/blockie_blue_idle02.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/left/blockie_blue_moving_left.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/right/blockie_blue_moving_right.png</key>
+            <key type="filename">../assets/images/blocks/block_blue/up/blockie_blue_moving_up.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0,0</point_f>
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>128,128,256,256</rect>
+                <rect>32,32,64,64</rect>
                 <key>scale9Paddings</key>
-                <rect>128,128,256,256</rect>
+                <rect>32,32,64,64</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
