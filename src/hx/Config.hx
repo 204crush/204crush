@@ -21,7 +21,14 @@ class Config
 		"img/block_orange.json",
 		"img/block_blue.json",
 		"img/bg.jpg",
+		"img/bg_no_sky.png",
+		"img/bg_sky.png",
 		"img/trail.png",
+		"img/logo.png",
+		"img/button_start.png",
+		"img/tutorial_swipe.png",
+		"img/tutorial_match.png",
+		"img/text_tutorial.png",
 		
 	];
 	
