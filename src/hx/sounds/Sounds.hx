@@ -22,6 +22,11 @@ class Sounds
 	 * Possible sounds. Mapped to id.
 	 */
 	public static var SWOOSH:String = "swoosh.mp3";
+	public static var LINE_CLEAR:String = "ExeCUTE_line_clear.ogg";
+	public static var MATCH_4:String = "ExeCUTE_match_4.ogg";
+	public static var MATCH_5:String = "ExeCUTE_match_5.ogg";
+	public static var MATCH_SQUARE:String = "ExeCUTE_match_square.ogg";
+	public static var TAP:String = "ExeCUTE_tap.ogg";
 	public static var START:String = "ExeCUTE_start.ogg";
 	public static var BACKGROUND:String = "ExeCUTE_loop.ogg";
 
@@ -64,10 +69,14 @@ class Sounds
 		sounds = [
 			{s:START, c:1 },
 			{s:BACKGROUND, c:1 },
-			{s:SWOOSH, c:1 },
-			
+			{s:SWOOSH, c:4 },
+			{s:LINE_CLEAR, c:4 },
+			{s:MATCH_4, c:4 },
+			{s:MATCH_5, c:4 },
+			{s:MATCH_SQUARE, c:4 },
+			{s:TAP, c:4 },
 		];
-		
+
 		//Load single sounds
 		for (s in sounds)
 		{
