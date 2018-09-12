@@ -21,8 +21,9 @@ class Sounds
 	/**
 	 * Possible sounds. Mapped to id.
 	 */
-	public static var SWOOSH:String = "swoosh.mp3";
+	public static var SWOOSH:String = "swoosh.ogg";
 	public static var LINE_CLEAR:String = "ExeCUTE_line_clear.ogg";
+	public static var MATCH_3:String = "ExeCUTE_match_3.ogg";
 	public static var MATCH_4:String = "ExeCUTE_match_4.ogg";
 	public static var MATCH_5:String = "ExeCUTE_match_5.ogg";
 	public static var MATCH_SQUARE:String = "ExeCUTE_match_square.ogg";
@@ -52,6 +53,8 @@ class Sounds
 	
 	private static var ingame:Bool = false;
 	
+	private static var musicvol:Float = 0.5;
+	
 	/**
 	* Initializes the background sound.
 	* @param framework A reference to the framework.
@@ -71,6 +74,7 @@ class Sounds
 			{s:BACKGROUND, c:1 },
 			{s:SWOOSH, c:4 },
 			{s:LINE_CLEAR, c:4 },
+			{s:MATCH_3, c:4 },
 			{s:MATCH_4, c:4 },
 			{s:MATCH_5, c:4 },
 			{s:MATCH_SQUARE, c:4 },
@@ -121,7 +125,7 @@ class Sounds
 				
 				if (!Sound.getMute() && ( !waitingForIOS ))
 				{
-					Sounds.playEffect(Sounds.BACKGROUND, -1, 1);
+					Sounds.playEffect(Sounds.BACKGROUND, -1, musicvol);
 				}
 			}
 		});
@@ -148,7 +152,7 @@ class Sounds
 		
 		if (untyped e.id == Sounds.BACKGROUND && !Sound.getMute() && !waitingForIOS && !ingame)
 		{
-			Sounds.playEffect(Sounds.BACKGROUND, -1,bg_volume);
+			//Sounds.playEffect(Sounds.BACKGROUND, -1,bg_volume);
 		}
 	
 		if (soundsLoaded == totalSounds && loadedHandler != null)
@@ -169,7 +173,7 @@ class Sounds
 		if (!Sound.getMute())
 		{
 			if(loaded.indexOf(BACKGROUND)>=0)
-				Sounds.playEffect(Sounds.BACKGROUND, -1, bg_volume);
+				Sounds.playEffect(Sounds.BACKGROUND, -1, musicvol);
 		}
 	}
 	
@@ -226,7 +230,7 @@ class Sounds
 			Sound.setMute(false);
 				Sounds.stopSound(BACKGROUND);
 				if(loaded.indexOf(Sounds.BACKGROUND)>=0 )
-					Sounds.playEffect(Sounds.BACKGROUND, -1, bg_volume);
+					Sounds.playEffect(Sounds.BACKGROUND, -1, musicvol);
 		}
 	}
 	

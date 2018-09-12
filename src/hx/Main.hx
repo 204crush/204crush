@@ -201,6 +201,7 @@ class Main
 	
 	private function onStartClick_Small():Void
 	{
+		Sounds.playEffect(Sounds.TAP);
 		GridLogic.GRID_HEIGHT = 6;
 		GridLogic.GRID_WIDTH = 6;
 		onStartClick();
@@ -208,6 +209,7 @@ class Main
 	
 	private function onStartClick_Medium():Void
 	{
+		Sounds.playEffect(Sounds.TAP);
 		GridLogic.GRID_HEIGHT = 7;
 		GridLogic.GRID_WIDTH = 7;
 		onStartClick();
@@ -215,6 +217,7 @@ class Main
 	
 	private function onStartClick_Big():Void
 	{
+		Sounds.playEffect(Sounds.TAP);
 		GridLogic.GRID_HEIGHT = 8;
 		GridLogic.GRID_WIDTH = 8;
 		onStartClick();
