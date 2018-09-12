@@ -114,6 +114,7 @@ class Main
 		if (this.resizeTimer != null) this.resizeTimer.stop();
 		this.resizeTimer = Timer.delay(function()
 		{
+			this.mainContainer.visible = true;
 			var size:Rectangle = this.getGameSize();
 			this.renderer.resize(size.width, size.height);
 			this.start.resize(size);
@@ -194,6 +195,8 @@ class Main
 		this.end.back.addListener("tap", onBackClick);
 		
 		this.game.addListener(GameView.GAME_ENDED, onGameEnd);
+		
+		this.mainContainer.visible = false;
 	}
 	
 	private function onStartClick_Small():Void
