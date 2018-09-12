@@ -29,6 +29,7 @@ class GameView extends Container
 	private var praises:PraiseManager;
 	
 	private var bg:Sprite;
+	private var bgSky:Sprite;
 	private var logo:Sprite;
 	private var scoreBG:Sprite;
 	private var control:GridControl;
@@ -49,7 +50,8 @@ class GameView extends Container
 	
 	private function initializeControls():Void
 	{
-		this.bg = Asset.getImage("bg.jpg", false);
+		this.bg = Asset.getImage("bg_no_sky.png", false);
+		this.bgSky = Asset.getImage("bg_sky.png", false);
 		this.logo = Asset.getImage("logo.png", false);
 		this.scoreBG = Asset.getImage("bg_score.png", false);
 		
@@ -69,6 +71,7 @@ class GameView extends Container
 		
 		this.lineAnimator = new LineAnimator();
 		
+		this.addChild(this.bgSky);
 		this.addChild(this.bg);
 		this.addChild(this.control);
 		this.addChild(this.score);
@@ -115,7 +118,7 @@ class GameView extends Container
 		} else // Portrait
 		{
 			this.y += 200;
-			bg.y = -200 / this.scale.y;
+			bgSky.y = -200 / this.scale.y;
 		}
 	}
 	
