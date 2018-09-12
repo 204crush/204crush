@@ -15,9 +15,9 @@ import util.Pool;
 class ParticleManager 
 {
 	//Effects
-	public static var bgStars:BgStars;
-	public static var words:BgWords;
-	public static var stars:Container;
+	public static var squares:SquareParticles;
+	
+	public static var particles:Container;
 	
 	public function new() 
 	{
@@ -26,14 +26,11 @@ class ParticleManager
 	
 	public static function init():Void
 	{
-		stars = new Container();
+		particles = new Container();
 		
 		//Effects
-		bgStars = new BgStars();
-		stars.addChild(bgStars);
-		
-		words = new BgWords();
-		stars.addChild(words);
+		squares = new SquareParticles();
+		particles.addChild(squares);
 		
 	}
 	

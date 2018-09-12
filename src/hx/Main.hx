@@ -4,6 +4,7 @@ import controls.StartView;
 import createjs.soundjs.Sound;
 import createjs.tweenjs.Tween;
 import haxe.Timer;
+import logic.GridLogic;
 import particles.ParticleManager;
 
 import js.Browser;
@@ -93,6 +94,8 @@ class Main
 	 */
 	private function onAssetsLoaded():Void
 	{
+		GridLogic.INIT();
+		
 		Browser.document.getElementById("preload").remove();
 		this.initializeRenderer();
 		this.initializeControls();
@@ -152,6 +155,7 @@ class Main
 	*/
 	private function initializeControls():Void
 	{
+		ParticleManager.init();
 		
 		this.mainContainer = new Container();
 		
@@ -161,7 +165,7 @@ class Main
 		
 		this.mainContainer.addChild(this.start);
 		this.mainContainer.addChild(this.game);
-		
+		this.mainContainer.addChild(ParticleManager.particles);
 		//ParticleManager.init();
 		
 		this.onResize(null);

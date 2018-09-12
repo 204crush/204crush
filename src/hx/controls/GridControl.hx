@@ -20,6 +20,8 @@ import util.Asset;
  */
 class GridControl extends Container 
 {
+	public static var ON_BLOCK_REMOVE:String = "onBlockRemove";
+	
 	public static var SPACING:Int = 0;
 	public static var BLOCK_HEIGHT:Int = 130;
 	public static var BLOCK_WIDTH:Int = 130;
@@ -42,10 +44,14 @@ class GridControl extends Container
 	
 	private var lastRemoved:Array<Node>;
 	private var lastSwipeDirection:Direction;
+	private var chains:Int = 0;
 	
 	public function new() 
 	{
 		super();
+		
+		BLOCK_HEIGHT =Math.floor( 130 * 6 / GridLogic.GRID_HEIGHT);
+		BLOCK_WIDTH =Math.floor( 130 * 6 / GridLogic.GRID_HEIGHT);
 		
 		this.initializeControls();
 		
@@ -153,7 +159,7 @@ class GridControl extends Container
 		swipeStop.set(0, 0);
 		swipeDirection.set(0, 0);
 	}
-
+	
 	private function keyDown(event:KeyboardEvent):Void
 	{
 		var direction:Direction = null;
@@ -178,14 +184,15 @@ class GridControl extends Container
 	
 	private function doSwipe(direction:Direction):Void
 	{
-		if (direction != null && enabled)
+		if (direction != null && enabled )
 		{
-			enabled = true;
+			chains = 0;
+			enabled = false;
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
 			this.syncNodes(false);
 			lastRemoved = this.logic.remove();
-			Timer.delay(nextStep, 350);
+			Timer.delay(nextStep, 550);
 		}
 		/*
 			while (removed.length > 0)
@@ -211,11 +218,18 @@ class GridControl extends Container
 	{
 		if ( lastRemoved.length > 0)
 		{
+			chains++;
+			if(chains > 1)
+				PraiseManager.showMessage("Chained " + chains + "X!",400);
+
 			this.logic.clearRemoved(lastRemoved);
 			this.logic.swipe(lastSwipeDirection);
 			this.syncNodes(true);
+			var removed:Int = lastRemoved.length;
 			lastRemoved = this.logic.remove();
-			Timer.delay(nextStep, 750);
+			if (lastRemoved.length == 0) enabled = true;
+			Timer.delay(nextStep, 600);
+			this.emit(ON_BLOCK_REMOVE, removed*15);
 		}
 		else
 		{
