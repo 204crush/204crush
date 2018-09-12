@@ -48,7 +48,7 @@ class LineAnimator extends Container
 			curind++;
 			s.visible = true;
 			if(line.value != -1)
-				s.tint = [0x0000ff, 0x00ff00, 0xffff00, 0xffffff][line.value];
+				s.tint = [0x0000ff, 0x00ff00, 0xffff00, 0x9e7cca][line.value];
 			s.x = tx;
 			s.y = ty;
 			s.alpha = 0;
