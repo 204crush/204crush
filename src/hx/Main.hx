@@ -1,4 +1,5 @@
 package;
+import controls.EndView;
 import controls.GameView;
 import controls.StartView;
 import createjs.soundjs.Sound;
@@ -56,6 +57,7 @@ class Main
 	
 	public var game:GameView;
 	private var start:StartView;
+	private var end:EndView;
 	
 	/**
 	 * Renderer for the game.
@@ -116,6 +118,7 @@ class Main
 			this.renderer.resize(size.width, size.height);
 			this.start.resize(size);
 			this.game.resize(size);
+			this.end.resize(size);
 			
 		},
 		50);
@@ -162,9 +165,13 @@ class Main
 		this.game = new GameView();
 		this.game.visible = false;
 		this.start = new StartView();
+		this.start.visible = true;
+		this.end = new EndView();
+		this.end.visible = false;
 		
 		this.mainContainer.addChild(this.start);
 		this.mainContainer.addChild(this.game);
+		this.mainContainer.addChild(this.end);
 		this.mainContainer.addChild(ParticleManager.particles);
 		//ParticleManager.init();
 		
@@ -175,6 +182,15 @@ class Main
 		
 		this.start.start.addListener("click", onStartClick);
 		this.start.start.addListener("tap", onStartClick);
+		
+		
+		this.end.again.addListener("click", onAgainClick);
+		this.end.again.addListener("tap", onAgainClick);
+		
+		this.end.back.addListener("click", onBackClick);
+		this.end.back.addListener("tap", onBackClick);
+		
+		this.game.addListener(GameView.GAME_ENDED, onGameEnd);
 	}
 	
 	private function onStartClick():Void
@@ -182,11 +198,39 @@ class Main
 		Sounds.playEffect(Sounds.TOGGLE);
 		this.start.interactiveChildren = false;
 		this.start.visible = false;
+		this.end._score.setScore(0);
 		game.prepare();
 		this.game.visible = true;
 		Timer.delay(function(){
 			this.game.start();
 		},500);
+	}
+	
+	private function onAgainClick():Void
+	{
+		this.end.interactiveChildren = false;
+		this.end.visible = false;
+		onStartClick();
+	}
+	
+	
+	private function onBackClick():Void
+	{
+		Sounds.playEffect(Sounds.TOGGLE);
+		this.end.interactiveChildren = false;
+		this.end.visible = false;
+		this.start.visible = true;
+		this.start.interactiveChildren = true;
+	}
+	
+	private function onGameEnd():Void
+	{
+		Sounds.playEffect(Sounds.TOGGLE);
+		this.end.interactiveChildren = true;
+		this.end._score.setScore(GameView._score);
+		this.game.interactiveChildren = false;
+		this.game.visible = false;
+		this.end.visible = true;
 	}
 	
 	public function replay():Void

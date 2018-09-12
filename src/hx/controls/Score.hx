@@ -38,7 +38,8 @@ class Score extends Container
 		ts.dropShadowBlur = 10;
 		ts.fontFamily = "ar_christyregular";
 		ts.fontSize = 90;	
-		ts.fill = 0xBA00FF;
+		//ts.fill = 0xBA00FF;
+		ts.fill = 0xFFFFFF;
 		this.scoreField = new Text("12512", ts);
 		this.addChild(this.scoreField);
 	}

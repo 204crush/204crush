@@ -31,7 +31,7 @@ class GameView extends Container
 	private var bg:Sprite;
 	private var control:GridControl;
 	private var size:Rectangle;
-	private var _score:Int = 0;
+	public static var _score:Int = 0;
 	private var lineAnimator:LineAnimator;
 	
 	public function new() 
