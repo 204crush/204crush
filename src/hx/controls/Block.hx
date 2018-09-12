@@ -151,21 +151,23 @@ class Block extends Container
 		if (active && node.value == -1)
 		{
 			//Destroyed. Sleep.
-			ParticleManager.squares.spawn(ParticleManager.squares.toLocal(new Point(),this),[0x0000ff, 0x00ff00, 0xffff00, 0xffffff][prevValue]);
+			
 			this.active = false;
 			sprite.textures = death[prevValue];
 			this.sprite.play();
 			this.bright.visible = true;
 			this.bright.alpha = 0.0;
-			Tween.get(this.bright).to({alpha:0.5}, 150).to({alpha:0}, 50);
+			Tween.get(this.bright).wait(200,true).to({alpha:0.5}, 150).to({alpha:0}, 50);
 			Tween.removeTweens(this.scale);
-			Tween.get(this.scale).wait(150,true).to({x:0, y:0}, 250, Ease.quadIn);
+			Tween.get(this.scale).wait(200,true).call(function(){
+				ParticleManager.squares.spawn(ParticleManager.squares.toLocal(new Point(),this),[0x0000ff, 0x00ff00, 0xffff00, 0xffffff][prevValue]);
+			}).to({x:0, y:0}, 250, Ease.quadIn);
 		}
 		else if (!active && node.value >= 0)
 		{
 			prevValue = node.value;
 			this.sprite.textures = defaultAnim[value];
-			this.sprite.tint = [0x0000ff, 0x00ff00, 0xffff00, 0xffffff][value];
+			
 			this.sprite.play();
 //			this.sprite.texture = textures[value];
 			//New spawn
@@ -179,7 +181,6 @@ class Block extends Container
 		{
 			//this.sprite.texture = textures[value];
 			this.sprite.textures = defaultAnim[value];
-			this.sprite.tint = [0x0000ff, 0x00ff00, 0xffff00, 0xffffff][value];
 			
 			//Move
 			var tx:Float = node.x * GridControl.BLOCK_WIDTH + Math.max(0, node.x - 1) * GridControl.SPACING + GridControl.BLOCK_WIDTH / 2;

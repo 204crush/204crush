@@ -52,7 +52,7 @@ class Score extends Container
 			curScore = scoreTarget;
 		}
 		this.scoreField.text = Std.string(Math.floor(curScore));
-		this.scoreField.x = Math.round( 0);
+		this.scoreField.x = Math.round( -this.scoreField.width/2);
 	}
 	
 	public function setScore(value:Int):Void
