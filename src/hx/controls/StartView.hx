@@ -50,40 +50,40 @@ class StartView extends Container
 		this.swipe = Asset.getImage("tutorial_swipe.png", false);
 		this.swipe.anchor.set(0.5, 0);
 		this.swipe.x = 760;
-		this.swipe.y = 580-50;
+		this.swipe.y = 680-50;
 		
 		this.match = Asset.getImage("tutorial_match.png", false);
 		this.match.anchor.set(0.5, 0);
 		this.match.x = 760;
-		this.match.y = 900-50;
+		this.match.y = 1000-50;
 		
 		this.text = Asset.getImage("text_tutorial.png", false);
 		this.text.anchor.set(0.5, 0);
 		this.text.x = 1184;
-		this.text.y = 760-50;
+		this.text.y = 860-50;
 		
 		this.start_small = Asset.getImage("button_board_small.png", false);
 		this.start_small.anchor.set(0.5, 0);
 		this.start_small.x = 764;
-		this.start_small.y = 1224-50;
+		this.start_small.y = 1324-25;
 		this.start_small.interactive = true;
 		
 		this.start_medium = Asset.getImage("button_board_medium.png", false);
 		this.start_medium.anchor.set(0.5, 0);
 		this.start_medium.x = 1024;
-		this.start_medium.y = 1224-50;
+		this.start_medium.y = 1324-25;
 		this.start_medium.interactive = true;
 		
 		this.start_big = Asset.getImage("button_board_big.png", false);
 		this.start_big.anchor.set(0.5, 0);
 		this.start_big.x = 1284;
-		this.start_big.y = 1224-50;
+		this.start_big.y = 1324-25;
 		this.start_big.interactive = true;
 		
 		this.bg_boardselection = Asset.getImage("bg_boardselection.png", false);
 		this.bg_boardselection.anchor.set(0.5, 0);
 		this.bg_boardselection.x = 1024;
-		this.bg_boardselection.y = 1104;
+		this.bg_boardselection.y = 1224;
 		this.bg_boardselection.interactive = true;
 		
 		this.bg = Asset.getImage("bg.png", false);
@@ -119,7 +119,7 @@ class StartView extends Container
 		
 	}
 	
-	private var minRectGame:Rectangle = new Rectangle(272, 170, 1528, 1152);
+	private var minRectGame:Rectangle = new Rectangle(272, 170, 1528, 1352);
 	private var minRectPortraitGame:Rectangle = new Rectangle(568,0, 920, 1580);
 	private function getTargetRect():Rectangle
 	{
