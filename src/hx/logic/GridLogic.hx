@@ -237,7 +237,7 @@ class GridLogic
 	 * Removes found groups.
 	 * @return
 	 */
-	public function remove():Array<Node>
+	public function remove(?outLines:Array<Line>):Array<Node>
 	{
 		var found:Array<Line> = [];
 		//Find out the lines.
@@ -267,6 +267,7 @@ class GridLogic
 		
 		for ( line in found)
 		{
+			if (outLines != null) outLines.push(line);
 			for (n in line.nodes)
 			{
 				if (removed.indexOf(n) == -1) removed.push(n);
@@ -275,6 +276,24 @@ class GridLogic
 		if (removed.length > 0)
 			trace("REMVOED: " + removed.length);
 		return removed;
+	}
+	
+	public function applyLineClear(x:Int, y:Int, orientation:Orientation):Void
+	{
+		if (orientation == Orientation.horizontal)
+		{
+			for (x in 0...GRID_WIDTH)
+			{
+				grid[x][y].value = -1;
+			}
+		}
+		else if (orientation == Orientation.vertical)
+		{
+			for (y in 0...GRID_HEIGHT)
+			{
+				grid[x][y].value = -1;
+			}
+		}
 	}
 	
 	public function clearRemoved(removed:Array<Node>):Void

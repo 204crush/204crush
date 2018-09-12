@@ -69,9 +69,9 @@ class PraiseManager extends Container
 		text.visible = true;
 		text.alpha = 1;
 		
-		Tween.get(text.pivot).to({y:250}, 1500, Ease.quadOut);
+		Tween.get(text.pivot).to({y:90}, 1500, Ease.quadOut);
 		
-		Tween.get(text.scale).to({x:1.0, y:1.0}, 1500, Ease.quadOut);
+		Tween.get(text.scale).to({x:1.4, y:1.4}, 1500, Ease.quadOut);
 		Tween.get(text).wait(1000,true).to({alpha:0}, 500, Ease.quadOut);
 		
 	}

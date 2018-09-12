@@ -43,6 +43,7 @@ class GridControl extends Container
 	public var enabled:Bool = false;
 	
 	private var lastRemoved:Array<Node>;
+	private var lastLines:Array<Line>;
 	private var lastSwipeDirection:Direction;
 	private var chains:Int = 0;
 	
@@ -119,6 +120,31 @@ class GridControl extends Container
 		{
 			b.sync(middleStep);
 		}
+		if (lastLines != null)
+		{
+			for (line in lastLines)
+			{
+				//Simple cases
+				if (line.nodes.length == 5)
+				{
+					//Calculate center point.
+					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.vertical);
+					logic.applyLineClear( line.nodes[2].x, line.nodes[2].y, Orientation.horizontal);
+					trace("CLEAR 5");
+				}
+				else if (line.nodes.length == 4)
+				{
+					logic.applyLineClear( line.nodes[0].x, line.nodes[0].y, line.orientation);
+					trace("CLEAR 4");
+				}
+				
+				//Check if L or X is formed.
+				for ( line2 in lastLines)
+				{
+					
+				}
+			}
+		}
 	}
 	
 	private function touchDown(eventData:TouchEvent) 
@@ -191,7 +217,8 @@ class GridControl extends Container
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
 			this.syncNodes(false);
-			lastRemoved = this.logic.remove();
+			lastLines = [];
+			lastRemoved = this.logic.remove(lastLines);
 			Timer.delay(nextStep, 550);
 		}
 		/*
@@ -226,7 +253,8 @@ class GridControl extends Container
 			this.logic.swipe(lastSwipeDirection);
 			this.syncNodes(true);
 			var removed:Int = lastRemoved.length;
-			lastRemoved = this.logic.remove();
+			lastLines = [];
+			lastRemoved = this.logic.remove(lastLines);
 			if (lastRemoved.length == 0) enabled = true;
 			Timer.delay(nextStep, 600);
 			this.emit(ON_BLOCK_REMOVE, removed*15);

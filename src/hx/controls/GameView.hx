@@ -53,7 +53,7 @@ class GameView extends Container
 		
 		this.praises = new PraiseManager();
 		this.praises.x = control.x + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) / 2);
-		this.praises.y = 100;
+		this.praises.y = control.y + Math.floor(( GridControl.BLOCK_WIDTH * GridLogic.GRID_WIDTH ) );
 		
 		this.addChild(this.bg);
 		this.addChild(this.control);
