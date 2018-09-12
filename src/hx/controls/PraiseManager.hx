@@ -2,6 +2,7 @@ package controls;
 
 import createjs.tweenjs.Ease;
 import createjs.tweenjs.Tween;
+import haxe.Timer;
 import pixi.core.display.Container;
 import pixi.core.text.Text;
 import pixi.core.text.TextStyleObject;
@@ -43,9 +44,9 @@ class PraiseManager extends Container
 		}
 	}
 	
-	public static function showMessage(message:String):Void
+	public static function showMessage(message:String,delay:Int):Void
 	{
-		instance.showPraise(message);
+		Timer.delay(function(){instance.showPraise(message); }, delay);
 	}
 	
 	public function showPraise(message:String):Void
@@ -60,6 +61,7 @@ class PraiseManager extends Container
 		text.pivot.x = text.width / 2;
 		text.pivot.y = text.height / 2;
 		text.visible = true;
+		text.alpha = 1;
 		Tween.get(text.scale).to({x:1.7, y:1.7}, 800, Ease.quadOut);
 		Tween.get(text).wait(500,true).to({alpha:0}, 300, Ease.quadOut);
 		

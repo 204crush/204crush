@@ -45,7 +45,7 @@ class Score extends Container
 	
 	private function ontick(delta:Float):Void
 	{
-		curScore += Math.round( scoreTarget - curScore ) / 30;
+		curScore += Math.round( scoreTarget - curScore ) / 15;
 		if (curScore - 1 > scoreTarget)
 		{
 			curScore = scoreTarget;

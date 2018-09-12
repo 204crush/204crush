@@ -44,6 +44,7 @@ class GridControl extends Container
 	
 	private var lastRemoved:Array<Node>;
 	private var lastSwipeDirection:Direction;
+	private var chains:Int = 0;
 	
 	public function new() 
 	{
@@ -185,6 +186,7 @@ class GridControl extends Container
 	{
 		if (direction != null && enabled )
 		{
+			chains = 0;
 			enabled = false;
 			this.lastSwipeDirection = direction;
 			this.logic.swipe(direction);
@@ -216,6 +218,10 @@ class GridControl extends Container
 	{
 		if ( lastRemoved.length > 0)
 		{
+			chains++;
+			if(chains > 1)
+				PraiseManager.showMessage("Chained " + chains + "X!",400);
+
 			this.logic.clearRemoved(lastRemoved);
 			this.logic.swipe(lastSwipeDirection);
 			this.syncNodes(true);
