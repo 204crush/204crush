@@ -23,6 +23,7 @@ class StartView extends Container
 	public var start_small:Sprite;
 	public var start_medium:Sprite;
 	public var start_big:Sprite;
+	public var bg_boardselection:Sprite;
 	
 	private var origsize:Rectangle;
 	
@@ -56,7 +57,7 @@ class StartView extends Container
 		
 		this.start_small = Asset.getImage("button_board_small.png", false);
 		this.start_small.anchor.set(0.5, 0);
-		this.start_small.x = 774;
+		this.start_small.x = 764;
 		this.start_small.y = 1224;
 		this.start_small.interactive = true;
 		
@@ -68,9 +69,15 @@ class StartView extends Container
 		
 		this.start_big = Asset.getImage("button_board_big.png", false);
 		this.start_big.anchor.set(0.5, 0);
-		this.start_big.x = 1274;
+		this.start_big.x = 1284;
 		this.start_big.y = 1224;
 		this.start_big.interactive = true;
+		
+		this.bg_boardselection = Asset.getImage("bg_boardselection.png", false);
+		this.bg_boardselection.anchor.set(0.5, 0);
+		this.bg_boardselection.x = 1024;
+		this.bg_boardselection.y = 1154;
+		this.bg_boardselection.interactive = true;
 		
 		this.bg = Asset.getImage("bg.png", false);
 		this.bg.anchor.set(0, 0.15);
@@ -85,6 +92,7 @@ class StartView extends Container
 		this.addChild(this.swipe);
 		this.addChild(this.match);
 		this.addChild(this.text);
+		this.addChild(this.bg_boardselection);
 		this.addChild(this.start_small);
 		this.addChild(this.start_medium);
 		this.addChild(this.start_big);

@@ -29,6 +29,7 @@ class Config
 		"img/button_board_small.png",
 		"img/button_board_medium.png",
 		"img/button_board_big.png",
+		"img/bg_boardselection.png",
 		"img/tutorial_swipe.png",
 		"img/tutorial_match.png",
 		"img/text_tutorial.png",
