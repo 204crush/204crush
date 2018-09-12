@@ -195,8 +195,8 @@ Main.prototype = {
 		sounds_Sounds.playEffect(sounds_Sounds.TAP);
 		logic_GridLogic.GRID_HEIGHT = 8;
 		logic_GridLogic.GRID_WIDTH = 8;
-		logic_GridLogic.RANDOM_SPAWN_AMOUNT.min = 5;
-		logic_GridLogic.RANDOM_SPAWN_AMOUNT.max = 10;
+		logic_GridLogic.RANDOM_SPAWN_AMOUNT.min = 3;
+		logic_GridLogic.RANDOM_SPAWN_AMOUNT.max = 8;
 		this.onStartClick();
 	}
 	,onStartClick: function() {
@@ -973,7 +973,7 @@ controls_Score.prototype = $extend(PIXI.Container.prototype,{
 });
 var controls_StartView = function() {
 	this.minRectPortraitGame = new PIXI.Rectangle(568,0,920,1580);
-	this.minRectGame = new PIXI.Rectangle(272,170,1528,1152);
+	this.minRectGame = new PIXI.Rectangle(272,170,1528,1352);
 	PIXI.Container.call(this);
 	this.initializeControls();
 	this.soundObj = sounds_Sounds.playEffect(sounds_Sounds.START,0,0.3);
@@ -992,34 +992,34 @@ controls_StartView.prototype = $extend(PIXI.Container.prototype,{
 		this.swipe = util_Asset.getImage("tutorial_swipe.png",false);
 		this.swipe.anchor.set(0.5,0);
 		this.swipe.x = 760;
-		this.swipe.y = 530;
+		this.swipe.y = 630;
 		this.match = util_Asset.getImage("tutorial_match.png",false);
 		this.match.anchor.set(0.5,0);
 		this.match.x = 760;
-		this.match.y = 850;
+		this.match.y = 950;
 		this.text = util_Asset.getImage("text_tutorial.png",false);
 		this.text.anchor.set(0.5,0);
 		this.text.x = 1184;
-		this.text.y = 710;
+		this.text.y = 810;
 		this.start_small = util_Asset.getImage("button_board_small.png",false);
 		this.start_small.anchor.set(0.5,0);
 		this.start_small.x = 764;
-		this.start_small.y = 1174;
+		this.start_small.y = 1299;
 		this.start_small.interactive = true;
 		this.start_medium = util_Asset.getImage("button_board_medium.png",false);
 		this.start_medium.anchor.set(0.5,0);
 		this.start_medium.x = 1024;
-		this.start_medium.y = 1174;
+		this.start_medium.y = 1299;
 		this.start_medium.interactive = true;
 		this.start_big = util_Asset.getImage("button_board_big.png",false);
 		this.start_big.anchor.set(0.5,0);
 		this.start_big.x = 1284;
-		this.start_big.y = 1174;
+		this.start_big.y = 1299;
 		this.start_big.interactive = true;
 		this.bg_boardselection = util_Asset.getImage("bg_boardselection.png",false);
 		this.bg_boardselection.anchor.set(0.5,0);
 		this.bg_boardselection.x = 1024;
-		this.bg_boardselection.y = 1104;
+		this.bg_boardselection.y = 1224;
 		this.bg_boardselection.interactive = true;
 		this.bg = util_Asset.getImage("bg.png",false);
 		this.bg.anchor.set(0,0.15);

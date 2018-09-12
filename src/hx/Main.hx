@@ -253,8 +253,8 @@ class Main
 		Sounds.playEffect(Sounds.TAP);
 		GridLogic.GRID_HEIGHT = 8;
 		GridLogic.GRID_WIDTH = 8;
-		GridLogic.RANDOM_SPAWN_AMOUNT.min = 5;
-		GridLogic.RANDOM_SPAWN_AMOUNT.max = 10;
+		GridLogic.RANDOM_SPAWN_AMOUNT.min = 3;
+		GridLogic.RANDOM_SPAWN_AMOUNT.max = 8;
 		onStartClick();
 	}
 	
