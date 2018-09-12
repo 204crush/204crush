@@ -220,7 +220,7 @@ class GridControl extends Container
 		{
 			chains++;
 			if(chains > 1)
-				PraiseManager.showMessage("Chained " + chains + "X!",400);
+				PraiseManager.showMessage("Blooooooddd... " + chains + "X!",400);
 
 			this.logic.clearRemoved(lastRemoved);
 			this.logic.swipe(lastSwipeDirection);
@@ -236,6 +236,11 @@ class GridControl extends Container
 			this.logic.spawnRandom();
 			this.syncNodes(false);
 			this.enabled = true;
+			
+			if (this.logic.isFinished())
+			{
+				PraiseManager.showMessage("GAME OVER :(", 500);
+			}
 		}
 	}
 }

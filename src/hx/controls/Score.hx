@@ -34,11 +34,11 @@ class Score extends Container
 	{
 		var ts:TextStyleObject = {};
 		ts.dropShadow = true;
-		ts.dropShadowColor = "rgba(0,0,0,0.3)";
-		ts.dropShadowBlur = 3;
-		//ts.fontStyle = "pigment_demoregular";
+		ts.dropShadowColor = "#4d2424";
+		ts.dropShadowBlur = 10;
+		ts.fontFamily = "ar_christyregular";
 		ts.fontSize = 90;	
-		ts.fill = 0xffffff;
+		ts.fill = 0xBA00FF;
 		this.scoreField = new Text("12512", ts);
 		this.addChild(this.scoreField);
 	}
