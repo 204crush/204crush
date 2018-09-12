@@ -82,15 +82,43 @@ class EndView extends Container
 		this.addChild(this._score);
 	}
 	
-	public function resize(size:Rectangle)
+	private var size:Rectangle;
+	public function resize(size:Rectangle):Void
 	{
-		var s:Float = Math.max(size.width / bg.width, size.height / bg.height);
-		this.scale.x = this.scale.y = s;
+		this.size = size;
+		var tr:Rectangle = this.getTargetRect();
+		//this.width = tr.width;
+		//this.height = tr.height;
+		this.scale.x = this.scale.y = Math.min( tr.width / 2048, tr.height / 2048);
 		
-		//center the select.
-		this.x = Math.round(( size.width - bg.width * s) / 2);
-		this.y = Math.round(( size.height - bg.height * s) / 2 );
+		this.x = tr.x;
+		this.y = tr.y;
 		
+	}
+	
+	private var minRectGame:Rectangle = new Rectangle(272, 170, 1528, 1152);
+	private var minRectPortraitGame:Rectangle = new Rectangle(568,0, 920, 1580);
+	private function getTargetRect():Rectangle
+	{
+		
+		var ret:Rectangle = new Rectangle(0,0,0,0);
+		var iswide:Bool = size.width > size.height;
+		var mr:Rectangle =  iswide ? minRectGame : minRectPortraitGame;
+		
+		var s:Float = Math.min(size.width / mr.width, size.height / mr.height);
+		ret.width = bg.width * s;
+		ret.height = bg.height * s;
+		
+		
+		ret.x = Math.round((size.width - bg.width * s)/2);
+		ret.y = Math.floor( Math.max( -mr.y * s, Math.floor(( size.height - this.bg.height * s+50*s)))); 
+		if (size.width < size.height)
+		{
+			//Limit bottom on mobile.
+			ret.y =Math.floor( Math.max( ret.y, (-1970*s+size.height)));
+		}
+		
+		return ret;
 	}
 	
 }

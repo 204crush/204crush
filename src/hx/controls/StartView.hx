@@ -117,7 +117,7 @@ class StartView extends Container
 	}
 	
 	private var minRectGame:Rectangle = new Rectangle(272, 170, 1528, 1152);
-	private var minRectPortraitGame:Rectangle = new Rectangle(568,0, 920, 1080);
+	private var minRectPortraitGame:Rectangle = new Rectangle(568,0, 920, 1580);
 	private function getTargetRect():Rectangle
 	{
 		
