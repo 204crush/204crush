@@ -175,8 +175,6 @@ class Main
 		
 		this.start.start.addListener("click", onStartClick);
 		this.start.start.addListener("tap", onStartClick);
-		
-		onStartClick();
 	}
 	
 	private function onStartClick():Void

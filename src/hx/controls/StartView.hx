@@ -39,9 +39,7 @@ class StartView extends Container
 		
 		this.addChild(this.bg);
 //		this.addChild(this.logo);
-		this.logo.addChild(this.start);
-		
-		
+		this.addChild(this.start);
 	}
 	
 	public function resize(size:Rectangle)
