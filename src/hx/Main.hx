@@ -7,6 +7,7 @@ import createjs.tweenjs.Tween;
 import haxe.Timer;
 import logic.GridLogic;
 import particles.ParticleManager;
+import pixi.core.textures.Texture;
 
 import js.Browser;
 import js.html.CanvasElement;
@@ -51,6 +52,7 @@ class Main
 	private var container:DivElement;
 	private var mainCanvas:CanvasElement;
 	private var mainContainer:Container;
+	private var soundBtn:Sprite;
 	public var viewport:Container;
 	
 	private var ticker:Ticker;
@@ -147,8 +149,11 @@ class Main
 		options.clearBeforeRender = true;
 		options.preserveDrawingBuffer = false;
 		options.roundPixels = false;
+		options.resolution = 1.25;
 		
 		this.renderer = Detector.autoDetectRenderer(size.width, size.height, options);
+		renderer.view.style.transform = "scale(0.8, 0.8)";
+		renderer.view.style.transformOrigin = "0 0";
 		
 		Browser.document.getElementById("game").appendChild(renderer.view);
 	}
@@ -175,6 +180,29 @@ class Main
 		this.mainContainer.addChild(this.end);
 		this.mainContainer.addChild(ParticleManager.particles);
 		//ParticleManager.init();
+		
+		this.soundBtn = Asset.getImage("button_sound_on.png", true);
+		this.mainContainer.addChild(this.soundBtn);
+		this.soundBtn.interactive = true;
+		var soundsOn:Texture = soundBtn.texture;
+		var soundsOff:Texture = Asset.getTexture("button_sound_off.png", true);
+		this.soundBtn.scale.x = this.soundBtn.scale.y = 0.5;
+		this.soundBtn.x = 10;
+		this.soundBtn.y = 10;
+		this.soundBtn.addListener("click", function(){
+			soundBtn.texture = soundBtn.texture == soundsOn ? soundsOff : soundsOn;
+			if(soundBtn.texture == soundsOff)
+				Sounds.disableSounds();
+			else
+				Sounds.enableSounds();
+		});
+		this.soundBtn.addListener("tap", function(){
+			soundBtn.texture = soundBtn.texture == soundsOn ? soundsOff : soundsOn;
+			if(soundBtn.texture == soundsOff)
+				Sounds.disableSounds();
+			else
+				Sounds.enableSounds();
+		});
 		
 		this.onResize(null);
 		this.ticker = new Ticker();

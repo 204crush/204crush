@@ -20,6 +20,7 @@ class Config
 		"img/block_purple.json",
 		"img/block_orange.json",
 		"img/block_blue.json",
+		"img/block_red.json",
 		"img/bg.jpg",
 		"img/bg.png",
 		"img/bg_no_sky.png",

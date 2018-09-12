@@ -53,7 +53,7 @@ class Block extends Container
 	private function initializeControls():Void
 	{
 		
-		var colors:Array<String> = ["blue", "green", "orange", "purple"];
+		var colors:Array<String> = ["blue", "green", "orange", "purple", "red"];
 		if (moveLeft.length == 0)
 		{
 			for ( color in colors)
@@ -152,7 +152,7 @@ class Block extends Container
 			Tween.get(this.bright).wait(200,true).to({alpha:0.5}, 150).to({alpha:0}, 50);
 			Tween.removeTweens(this.scale);
 			Tween.get(this.scale).wait(200,true).call(function(){
-				ParticleManager.squares.spawn(ParticleManager.squares.toLocal(new Point(),this),[0x0000ff, 0x00ff00, 0xffff00, 0x9e7cca][prevValue]);
+				ParticleManager.squares.spawn(ParticleManager.squares.toLocal(new Point(),this),[0x0000ff, 0x00ff00, 0xffff00, 0x9e7cca, 0xff0000][prevValue]);
 			}).to({x:0, y:0}, 250, Ease.quadIn);
 		}
 		else if (!active && node.value >= 0)

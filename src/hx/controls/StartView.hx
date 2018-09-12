@@ -95,6 +95,10 @@ class StartView extends Container
 		//this.addChild(this.bg_sky);
 		//this.addChild(this.bg_no_sky);
 		
+		this.start_small.buttonMode = true;
+		this.start_medium.buttonMode = true;
+		this.start_big.buttonMode = true;
+		
 		this.addChild(this.logo);
 		this.addChild(this.swipe);
 		this.addChild(this.match);

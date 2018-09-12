@@ -124,10 +124,10 @@ class GameView extends Container
 			scorePos.set(1624, 512);
 		} else // Portrait
 		{
-			this.y += 200;
-			bgSky.y = -200 / this.scale.y;
-			logoPos.set(1024-200, 0);
-			scorePos.set(1024+200, 0);
+			this.y += 100;
+			bgSky.y = -100 / this.scale.y;
+			logoPos.set(1024-100, 0);
+			scorePos.set(1024+100, 0);
 		}
 		
 		this.score.x = scorePos.x;

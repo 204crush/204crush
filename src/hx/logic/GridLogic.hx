@@ -32,6 +32,8 @@ class GridLogic
 	public var grid:Array<Array<Node>>;
 	public var nodes:Array<Node>;
 	
+	private var swipes:Int = 0;
+	
 	public function new() 
 	{
 		trace(GRID_WIDTH , GRID_HEIGHT, MAX_VALUE);
@@ -90,6 +92,7 @@ class GridLogic
 	 */
 	public function spawnRandom():Void
 	{
+		
 		var possible:Array<Node> = this.nodes.filter(function(n:Node):Bool{return n.value == -1; });
 		
 		var amount:Int = Math.floor(
@@ -109,10 +112,15 @@ class GridLogic
 	private function randomizeValue(node:Node):Void
 	{
 		if (node.value != -1) throw "Randomizing node with existing value.";
-		node.value = Math.floor(Math.random() * MAX_VALUE);
-		//Spawn causes removal. Ignore.
-		if (remove().length > 0)
-			node.value = -1;
+		if (Math.random() < Math.min(0.2,swipes / 100 ))
+			node.value = MAX_VALUE;
+		else
+		{
+			node.value = Math.floor(Math.random() * MAX_VALUE);
+			//Spawn causes removal. Ignore.
+			if (remove().length > 0)
+				node.value = -1;
+		}
 	}
 	
 	/**
@@ -122,6 +130,7 @@ class GridLogic
 	 */
 	public function swipe(direction:Direction):Void
 	{
+		swipes++;
 		if (direction == Direction.right)
 			bubbleRight();
 		else if (direction == Direction.left)
